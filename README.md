@@ -1,2 +1,0 @@
-pubnub-chrome-console
-=====================

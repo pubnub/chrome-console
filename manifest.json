@@ -1,16 +1,12 @@
 {
-  "name": "Broken Links",
-  "version": "1.1",
-  "description": "Extends the Developer Tools, adding an audit category that finds broken links on the inspected page.",
-  "background": {
-    "scripts": ["background.js"]
-  },
-  "devtools_page": "devtools.html",
-  "permissions":  [
-    "experimental",
-    "tabs",
-    "http://*/*",
-    "https://*/*"
-  ],
-  "manifest_version": 2
+  "name": "PubNub Console",
+  "version": "0.1",
+  "description": "Inspect PubNub traffic.",
+  "devtools_page": "chrome-preprocessor.html",
+  "manifest_version": 2,
+  "content_security_policy": "default-src 'self'  chrome-extension-resource: ; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval';  connect-src *; frame-src *;",
+  "web_accessible_resources":
+    [
+      "*"
+    ]
 }
