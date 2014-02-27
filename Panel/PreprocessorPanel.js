@@ -1,6 +1,8 @@
 (function() {
 
-  var channels = {};
+  var channels = {},
+    active_channel = null;
+
 
   function start() {
 
@@ -56,12 +58,34 @@
 
   function render(channel, message) {
 
-    var li = document.createElement('li'),
-      rowContainer = document.querySelector('#consoles');
+    var $new_line = document.createElement('li'),
+      $channels = document.querySelector('#channels'),
+      $consoles = document.querySelector('#consoles'),
+      $new_channel = null
+      $new_console = null,
+      $the_console = null;
 
-    li.textContent = JSON.stringify(message);
+    if (typeof channels[channel] == 'undefined') {
 
-    rowContainer.appendChild(li);
+      $new_console = document.createElement('ul'),
+      $new_console.dataset.channel = channel;
+      $new_console.classList.add('console');
+
+      $new_channel = document.createElement('li');
+      $new_channel.textContent = channel;
+      $new_channel.dataset.channel = channel;
+
+      $channels.appendChild($new_channel);
+      $consoles.appendChild($new_console);
+
+      channels[channel] = true;
+
+    }
+
+    $the_console = document.querySelector('.console[data-channel=' + channel + ']');
+    $new_line.textContent = JSON.stringify(message);
+
+    $the_console.appendChild($new_line);
 
   }
 
