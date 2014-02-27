@@ -43,8 +43,14 @@ function demoPreprocessor() {
 }
 
 function listen() {
+
   var reloadButton = document.querySelector('.reload-button');
   reloadButton.addEventListener('click', demoPreprocessor);
+
+  chrome.devtools.network.onRequestFinished.addListener(function(request) {
+    console.log(request)
+  });
+
 }
 
 window.addEventListener('load', listen);
@@ -62,6 +68,7 @@ function updateUI(preprocessedFiles) {
     rowContainer.appendChild(createRow(url));
   });
 }
+
 
 })();
 
