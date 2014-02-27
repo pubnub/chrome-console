@@ -48,7 +48,7 @@ function listen() {
   reloadButton.addEventListener('click', demoPreprocessor);
 
   chrome.devtools.network.onRequestFinished.addListener(function(request) {
-    console.log(request)
+    console.log(request.request.url)
   });
 
 }
