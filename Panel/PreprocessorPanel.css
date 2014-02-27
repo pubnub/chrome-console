@@ -18,3 +18,9 @@ ul, ol {
   left: 25%;
   width: 75%;
 }
+.hide {
+  display: none;
+}
+.show {
+  display: block;
+}

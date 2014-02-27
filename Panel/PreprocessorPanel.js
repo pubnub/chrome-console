@@ -74,6 +74,11 @@
       $new_channel = document.createElement('li');
       $new_channel.textContent = channel;
       $new_channel.dataset.channel = channel;
+      $new_channel.classList.add('channel');
+
+      $new_channel.addEventListener('click', function() {
+        changePage(channel);
+      }, false);
 
       $channels.appendChild($new_channel);
       $consoles.appendChild($new_console);
@@ -86,6 +91,28 @@
     $new_line.textContent = JSON.stringify(message);
 
     $the_console.appendChild($new_line);
+
+  }
+
+  function changePage(channel) {
+
+    var $consoles = document.querySelectorAll('.console'),
+      $the_console = document.querySelector('.console[data-channel=' + channel + ']'),
+      $channels = document.querySelectorAll('.channels'),
+      $the_channel = document.querySelector('.channel[data-channel=' + channel +']');
+
+    [].forEach.call($consoles, function(el) {
+      el.classList.add('hide');
+    });
+
+    [].forEach.call($channels, function(el) {
+      el.classList.remove('active');
+    });
+
+    $the_console.classList.remove('hide');
+    $the_console.classList.add('show');
+
+    $the_channel.classList.add('active');
 
   }
 
