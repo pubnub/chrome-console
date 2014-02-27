@@ -1,6 +1,8 @@
 (function() {
 
-  function listen() {
+  var channels = {};
+
+  function start() {
 
     chrome.devtools.network.onRequestFinished.addListener(function(request) {
 
@@ -26,7 +28,7 @@
           console.log('publish to channel ' + channel + ' and message:');
           console.log(message);
 
-          createRow(message);
+          render(channel, message);
 
         }
 
@@ -36,10 +38,11 @@
 
             channel = params[3];
             console.log('subscribe to channel ' + channel + ' and message:');
+
               message = JSON.parse(body)[0][0]
               console.log(message);
 
-              createRow(message);
+              render(channel, message);
 
             });
 
@@ -51,12 +54,10 @@
 
   }
 
-  window.addEventListener('load', listen);
-
-  function createRow(message) {
+  function render(channel, message) {
 
     var li = document.createElement('li'),
-      rowContainer = document.querySelector('.js-preprocessed-urls');
+      rowContainer = document.querySelector('#consoles');
 
     li.textContent = JSON.stringify(message);
 
@@ -64,5 +65,6 @@
 
   }
 
+  start();
 
 })();
