@@ -3,7 +3,6 @@
   var channels = {},
     active_channel = null;
 
-
   function start() {
 
     chrome.devtools.network.onRequestFinished.addListener(function(request) {
@@ -87,7 +86,7 @@
 
     }
 
-    $the_console = document.querySelector('.console[data-channel=' + channel + ']');
+    $the_console = document.querySelector('.console[data-channel="' + channel + '"]');
     $new_line.textContent = JSON.stringify(message);
 
     $the_console.appendChild($new_line);
@@ -97,9 +96,9 @@
   function changePage(channel) {
 
     var $consoles = document.querySelectorAll('.console'),
-      $the_console = document.querySelector('.console[data-channel=' + channel + ']'),
+      $the_console = document.querySelector('.console[data-channel="' + channel + ']"'),
       $channels = document.querySelectorAll('.channels'),
-      $the_channel = document.querySelector('.channel[data-channel=' + channel +']');
+      $the_channel = document.querySelector('.channel[data-channel="' + channel +']"');
 
     [].forEach.call($consoles, function(el) {
       el.classList.add('hide');
