@@ -29,7 +29,7 @@
           console.log('publish to channel ' + channel + ' and message:');
           console.log(message);
 
-          render(channel, message);
+          render(channel, message, 1);
 
         }
 
@@ -43,7 +43,7 @@
               message = JSON.parse(body)[0][0]
               console.log(message);
 
-              render(channel, message);
+              render(channel, message, 2);
 
             });
 
@@ -55,7 +55,7 @@
 
   }
 
-  function render(channel, message) {
+  function render(channel, message, type) {
 
     var $new_line = document.createElement('li'),
       $channels = document.querySelector('#channels'),
@@ -82,12 +82,22 @@
       $channels.appendChild($new_channel);
       $consoles.appendChild($new_console);
 
+      if(!channels.length) {
+        changePage(channel);
+      }
+
       channels[channel] = true;
 
     }
 
     $the_console = document.querySelector('.console[data-channel="' + channel + '"]');
     $new_line.textContent = JSON.stringify(message);
+
+    if(type == 1) {
+      $new_line.classList.add('publish');
+    } else {
+      $new_line.classList.add('subscribe');
+    }
 
     $the_console.appendChild($new_line);
 
@@ -96,9 +106,9 @@
   function changePage(channel) {
 
     var $consoles = document.querySelectorAll('.console'),
-      $the_console = document.querySelector('.console[data-channel="' + channel + ']"'),
+      $the_console = document.querySelector('.console[data-channel="' + channel + '"]'),
       $channels = document.querySelectorAll('.channels'),
-      $the_channel = document.querySelector('.channel[data-channel="' + channel +']"');
+      $the_channel = document.querySelector('.channel[data-channel="' + channel +'"]');
 
     [].forEach.call($consoles, function(el) {
       el.classList.add('hide');
