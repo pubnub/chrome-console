@@ -41,8 +41,9 @@ ul, ol {
   position: fixed;
   left: 25%;
   width: 75%;
-  overflow: scroll;
   height: 100%;
+  word-wrap: break-word;
+  overflow-y: scroll;
 }
 #consoles-wrapper .console {
   font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
@@ -51,6 +52,7 @@ ul, ol {
   padding: 4px;
   border-bottom: 1px solid #efefef;
   position: relative;
+  white-space: pre;
 }
 .console li:after {
   position: absolute;
@@ -66,18 +68,28 @@ ul, ol {
 }
 .console li.publish:after {
   content: "Publish";
-  color: red;
+  color: #a91c23;
 }
 .console li.subscribe {
 }
 .console li.subscribe:after {
   content: "Subscribe";
-  color: blue;
+  color: #3394bf;
 }
 #history {
   text-align: center;
   padding: 4px;
   border-bottom: 1px solid #efefef;
+}
+
+.json-key {
+  color: brown;
+}
+.json-value {
+  color: navy;
+}
+.json-string {
+  color: olive;
 }
 
 .hide {
