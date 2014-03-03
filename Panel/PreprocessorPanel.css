@@ -11,6 +11,7 @@ body {
 h2 {
   border-bottom: 1px solid #ddd;
   padding: 4px;
+  display: block;
 }
 ul, ol {
   list-style-type: none;
@@ -45,43 +46,45 @@ ul, ol {
   word-wrap: break-word;
   overflow-y: scroll;
 }
-#consoles-wrapper .console {
+.lines {
   font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
 }
-.console li {
+.lines li {
   padding: 4px;
   border-bottom: 1px solid #efefef;
   position: relative;
   white-space: pre;
 }
-.console li:after {
+.lines li:after {
   position: absolute;
   right: 4px;
   top: 4px;
   font-size: 10px;
   font-family: 'Lucida Grande', sans-serif;
 }
-.console li:after:hover {
-  display: none;
-}
-.console li.publish {
-}
-.console li.publish:after {
+.lines li.publish:after {
   content: "Publish";
   color: #a91c23;
 }
-.console li.subscribe {
-}
-.console li.subscribe:after {
+.lines li.subscribe:after {
   content: "Subscribe";
   color: #3394bf;
 }
-#history {
+.lines li.history:after {
+  content: "History";
+  color: #ddd;
+}
+.load-history {
   text-align: center;
   padding: 4px;
-  border-bottom: 1px solid #efefef;
+  border-bottom: 1px solid #ddd;
+  background-color: #efefef;
+  font-size: 12px;
 }
-
+.load-history:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
 .json-key {
   color: brown;
 }

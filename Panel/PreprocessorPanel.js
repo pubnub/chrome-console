@@ -1,8 +1,8 @@
 (function() {
 
   var channels = {},
-    active_channel = null,
-    library = {};
+    library = {},
+    subscribe_key = null;
 
   library.json = {
     replacer: function(match, pIndent, pKey, pVal, pEnd) {
@@ -24,6 +24,123 @@
          .replace(jsonLine, library.json.replacer);
     }
   };
+
+  function render(channel, message, type, is_history) {
+
+    var
+      is_history = is_history || false,
+      $new_line = document.createElement('li'),
+      $channels = document.querySelector('#channels'),
+      $consoles = document.querySelector('#consoles'),
+      $new_channel = null
+      $new_console = null,
+      $the_console = null;
+
+    console.log(channel)
+    console.log(channels)
+
+    if (typeof channels[channel] == 'undefined') {
+
+      $new_console = document.createElement('ul');
+      $new_console.classList.add('lines');
+
+      $history = document.createElement('div');
+      $history.classList.add('load-history');
+      $history.innerHTML = "&#9650; Load Message History";
+
+      $history.addEventListener('click', function() {
+        load_history(channel);
+        $history.classList.add('hide');
+      });
+
+      $new_console_wrapper = document.createElement('div');
+      $new_console_wrapper.classList.add('console');
+      $new_console_wrapper.dataset.channel = channel;
+
+      $new_console_wrapper.appendChild($history);
+      $new_console_wrapper.appendChild($new_console);
+
+      $new_channel = document.createElement('li');
+      $new_channel.textContent = channel;
+      $new_channel.dataset.channel = channel;
+      $new_channel.classList.add('channel');
+
+      $new_channel.addEventListener('click', function() {
+        changePage(channel);
+      }, false);
+
+      $channels.appendChild($new_channel);
+      $consoles.appendChild($new_console_wrapper);
+
+      if(!channels.length) {
+        changePage(channel);
+      }
+
+      channels[channel] = true;
+
+    }
+
+    $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+    $new_line.innerHTML = library.json.prettyPrint(message);
+
+    if(is_history) {
+
+      $new_line.classList.add('history');
+
+      $the_console.insertBefore($new_line, $the_console.firstChild);
+
+    } else {
+
+      if(type == 1) {
+        $new_line.classList.add('publish');
+      } else {
+        $new_line.classList.add('subscribe');
+      }
+
+      $the_console.appendChild($new_line);
+
+    }
+
+  }
+
+  function changePage(channel) {
+
+    var $consoles = document.querySelectorAll('.console'),
+      $the_console = document.querySelector('.console[data-channel="' + channel + '"]'),
+      $channels = document.querySelectorAll('.channel'),
+      $the_channel = document.querySelector('.channel[data-channel="' + channel +'"]');
+
+    [].forEach.call($consoles, function(el) {
+      el.classList.add('hide');
+    });
+
+    [].forEach.call($channels, function(el) {
+      el.classList.remove('active');
+    });
+
+    $the_console.classList.remove('hide');
+    $the_console.classList.add('show');
+
+    $the_channel.classList.add('active');
+
+  }
+
+  function load_history(channel) {
+
+    pubnub.history({
+      channel: channel,
+      callback: function(history){
+
+        history[0].reverse();
+
+        for(var i = 0; i < history[0].length; i++) {
+          render(channel, history[0][i], 0, true);
+        }
+
+      },
+    });
+
+  }
 
   function start() {
 
@@ -54,6 +171,16 @@
 
         if(params[1] == "subscribe") {
 
+          if(!subscribe_key) {
+
+            subscribe_key = params[2];
+
+            pubnub = PUBNUB.init({
+              publish_key: subscribe_key,
+            });
+
+          }
+
           request.getContent(function(body){
 
             channel = params[3];
@@ -71,76 +198,6 @@
       }
 
     });
-
-  }
-
-  function render(channel, message, type) {
-
-    var $new_line = document.createElement('li'),
-      $channels = document.querySelector('#channels'),
-      $consoles = document.querySelector('#consoles'),
-      $new_channel = null
-      $new_console = null,
-      $the_console = null;
-
-    if (typeof channels[channel] == 'undefined') {
-
-      $new_console = document.createElement('ul'),
-      $new_console.dataset.channel = channel;
-      $new_console.classList.add('console');
-
-      $new_channel = document.createElement('li');
-      $new_channel.textContent = channel;
-      $new_channel.dataset.channel = channel;
-      $new_channel.classList.add('channel');
-
-      $new_channel.addEventListener('click', function() {
-        changePage(channel);
-      }, false);
-
-      $channels.appendChild($new_channel);
-      $consoles.appendChild($new_console);
-
-      if(!channels.length) {
-        changePage(channel);
-      }
-
-      channels[channel] = true;
-
-    }
-
-    $the_console = document.querySelector('.console[data-channel="' + channel + '"]');
-    $new_line.innerHTML = library.json.prettyPrint(message);
-
-    if(type == 1) {
-      $new_line.classList.add('publish');
-    } else {
-      $new_line.classList.add('subscribe');
-    }
-
-    $the_console.appendChild($new_line);
-
-  }
-
-  function changePage(channel) {
-
-    var $consoles = document.querySelectorAll('.console'),
-      $the_console = document.querySelector('.console[data-channel="' + channel + '"]'),
-      $channels = document.querySelectorAll('.channels'),
-      $the_channel = document.querySelector('.channel[data-channel="' + channel +'"]');
-
-    [].forEach.call($consoles, function(el) {
-      el.classList.add('hide');
-    });
-
-    [].forEach.call($channels, function(el) {
-      el.classList.remove('active');
-    });
-
-    $the_console.classList.remove('hide');
-    $the_console.classList.add('show');
-
-    $the_channel.classList.add('active');
 
   }
 
