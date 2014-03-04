@@ -4,6 +4,9 @@
   "description": "Inspect PubNub traffic.",
   "devtools_page": "chrome-preprocessor.html",
   "manifest_version": 2,
+  "icons": { "16": "16.png",
+             "48": "48.png",
+            "128": "128.png" },
   "permissions": [
     "tabs"
   ]
