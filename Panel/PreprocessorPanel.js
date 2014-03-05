@@ -1,6 +1,6 @@
 (function() {
 
-  var channels = {},
+  var rendered_channels = {},
     library = {},
     subscribe_key = null;
 
@@ -39,7 +39,7 @@
         $new_console = null,
         $the_console = null;
 
-     if (typeof channels[channel] == 'undefined') {
+     if (typeof rendered_channels[channel] == 'undefined') {
 
        $new_console = document.createElement('ul');
        $new_console.classList.add('lines');
@@ -77,7 +77,7 @@
          changePage(channel);
        }
 
-       channels[channel] = true;
+       rendered_channels[channel] = true;
 
      }
 
@@ -152,7 +152,9 @@
       var parser = document.createElement('a'),
         params = null,
         channel = null,
-        message = null;
+        message = null,
+        channels = [],
+        i = 0;
 
       parser.href = request.request.url;
 
@@ -193,29 +195,39 @@
               console.log('parsed message is');
               console.log(parsed);
 
-
               console.log(request)
               console.log(body)
 
               if(parsed) {
-
-                if(typeof parsed !== "undefined") {
-                  message = parsed[0][0];
-                }
 
                 console.log('parsed and params')
                 console.log(params)
                 console.log(parsed)
 
                 if(typeof parsed[2] !== "undefined") {
-                  console.log('going with parsed')
-                  channel = parsed[2];
-                } else {
-                  console.log('going with params')
-                  channel = params[3];
-                }
 
-                render(channel, message, 2);
+                  // bundle
+                  channels = parsed[2].split(',');
+
+                  for(var i = 0; i < parsed[0].length; i++) {
+
+                    console.log('rendering channel ' + channels[i] + ' and message ' + parsed[0][i])
+                    render(channels[i], parsed[0][i], 2);
+
+                  }
+
+                } else {
+
+                  // single
+                  channel = params[3];
+
+                  if(typeof parsed !== "undefined") {
+                    message = parsed[0][0];
+                  }
+
+                  render(channel, message, 2);
+
+                }
 
               } else {
                 console.log('parsed fail on message')
