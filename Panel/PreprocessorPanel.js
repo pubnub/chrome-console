@@ -29,8 +29,6 @@
 
     if(typeof message !== "undefined") {
 
-
-
      var
        is_history = is_history || false,
        $new_line = document.createElement('li'),
@@ -190,19 +188,18 @@
 
           request.getContent(function(body){
 
-            channel = decodeURIComponent(params[3]);
             console.log('subscribe to channel ' + channel + ' and message:');
 
-              message = JSON.parse(body);
+              parsed = JSON.parse(body);
 
               console.log('parsed message is');
-              console.log(message);
+              console.log(parsed);
 
-              if(typeof message !== "undefined") {
-                message = message[0][0];
+              if(typeof parsed !== "undefined") {
+                message = parsed[0][0];
               }
 
-              render(channel, message, 2);
+              render(parsed[2], message, 2);
 
             });
 
