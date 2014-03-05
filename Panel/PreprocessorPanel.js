@@ -25,21 +25,19 @@
     }
   };
 
-  function render(channel, message, type, is_history) {
+  function render(channel_, message, type, is_history) {
 
     if(typeof message !== "undefined") {
 
      var
-       is_history = is_history || false,
-       $new_line = document.createElement('li'),
-       $channels = document.querySelector('#channels'),
-       $consoles = document.querySelector('#consoles'),
-       $new_channel = null
-       $new_console = null,
-       $the_console = null;
-
-     console.log(channel)
-     console.log(channels)
+        channel = escape(channel_),
+        is_history = is_history || false,
+        $new_line = document.createElement('li'),
+        $channels = document.querySelector('#channels'),
+        $consoles = document.querySelector('#consoles'),
+        $new_channel = null
+        $new_console = null,
+        $the_console = null;
 
      if (typeof channels[channel] == 'undefined') {
 
@@ -64,7 +62,7 @@
        $new_console_wrapper.appendChild($new_console);
 
        $new_channel = document.createElement('li');
-       $new_channel.textContent = channel;
+       $new_channel.textContent = channel_;
        $new_channel.dataset.channel = channel;
        $new_channel.classList.add('channel');
 
@@ -89,7 +87,6 @@
      if(is_history) {
 
        $new_line.classList.add('history');
-
        $the_console.insertBefore($new_line, $the_console.firstChild);
 
      } else {
@@ -196,13 +193,29 @@
               console.log('parsed message is');
               console.log(parsed);
 
+
+              console.log(request)
+              console.log(body)
+
               if(parsed) {
 
                 if(typeof parsed !== "undefined") {
                   message = parsed[0][0];
                 }
 
-                render(parsed[2], message, 2);
+                console.log('parsed and params')
+                console.log(params)
+                console.log(parsed)
+
+                if(typeof parsed[2] !== "undefined") {
+                  console.log('going with parsed')
+                  channel = parsed[2];
+                } else {
+                  console.log('going with params')
+                  channel = params[3];
+                }
+
+                render(channel, message, 2);
 
               } else {
                 console.log('parsed fail on message')
