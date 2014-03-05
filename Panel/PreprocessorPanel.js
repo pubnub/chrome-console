@@ -166,7 +166,7 @@
 
         if(params[1] == "publish") {
 
-          channel = params[5];
+          channel = decodeURIComponent(params[5]);
 
           message = JSON.parse(decodeURIComponent(params[7]));
           console.log('publish to channel ' + channel + ' and message:');
@@ -190,7 +190,7 @@
 
           request.getContent(function(body){
 
-            channel = params[3];
+            channel = decodeURIComponent(params[3]);
             console.log('subscribe to channel ' + channel + ' and message:');
 
               message = JSON.parse(body);
