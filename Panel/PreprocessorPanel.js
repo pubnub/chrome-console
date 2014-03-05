@@ -57,6 +57,7 @@
 
        $new_console_wrapper = document.createElement('div');
        $new_console_wrapper.classList.add('console');
+       $new_console_wrapper.classList.add('hide');
        $new_console_wrapper.dataset.channel = channel;
 
        $new_console_wrapper.appendChild($history);
@@ -74,7 +75,7 @@
        $channels.appendChild($new_channel);
        $consoles.appendChild($new_console_wrapper);
 
-       if(!channels.length) {
+       if(document.querySelectorAll('#channels .channel').length == 1) {
          changePage(channel);
        }
 
@@ -181,7 +182,7 @@
             subscribe_key = params[2];
 
             pubnub = PUBNUB.init({
-              publish_key: subscribe_key,
+              subscribe_key: subscribe_key,
             });
 
           }
@@ -195,11 +196,18 @@
               console.log('parsed message is');
               console.log(parsed);
 
-              if(typeof parsed !== "undefined") {
-                message = parsed[0][0];
-              }
+              if(parsed) {
 
-              render(parsed[2], message, 2);
+                if(typeof parsed !== "undefined") {
+                  message = parsed[0][0];
+                }
+
+                render(parsed[2], message, 2);
+
+              } else {
+                console.log('parsed fail on message')
+                console.log(body)
+              }
 
             });
 
