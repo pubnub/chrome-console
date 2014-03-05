@@ -19,85 +19,91 @@
     prettyPrint: function(obj) {
       var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
       return JSON.stringify(obj, null, 2)
-         .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
-         .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-         .replace(jsonLine, library.json.replacer);
+       .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+       .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+       .replace(jsonLine, library.json.replacer);
     }
   };
 
   function render(channel, message, type, is_history) {
 
-    var
-      is_history = is_history || false,
-      $new_line = document.createElement('li'),
-      $channels = document.querySelector('#channels'),
-      $consoles = document.querySelector('#consoles'),
-      $new_channel = null
-      $new_console = null,
-      $the_console = null;
+    if(typeof message !== "undefined") {
 
-    console.log(channel)
-    console.log(channels)
 
-    if (typeof channels[channel] == 'undefined') {
 
-      $new_console = document.createElement('ul');
-      $new_console.classList.add('lines');
+     var
+       is_history = is_history || false,
+       $new_line = document.createElement('li'),
+       $channels = document.querySelector('#channels'),
+       $consoles = document.querySelector('#consoles'),
+       $new_channel = null
+       $new_console = null,
+       $the_console = null;
 
-      $history = document.createElement('div');
-      $history.classList.add('load-history');
-      $history.innerHTML = "&#9650; Load Message History";
+     console.log(channel)
+     console.log(channels)
 
-      $history.addEventListener('click', function() {
-        load_history(channel);
-        $history.classList.add('hide');
-      });
+     if (typeof channels[channel] == 'undefined') {
 
-      $new_console_wrapper = document.createElement('div');
-      $new_console_wrapper.classList.add('console');
-      $new_console_wrapper.dataset.channel = channel;
+       $new_console = document.createElement('ul');
+       $new_console.classList.add('lines');
 
-      $new_console_wrapper.appendChild($history);
-      $new_console_wrapper.appendChild($new_console);
+       $history = document.createElement('div');
+       $history.classList.add('load-history');
+       $history.innerHTML = "&#9650; Load Message History";
 
-      $new_channel = document.createElement('li');
-      $new_channel.textContent = channel;
-      $new_channel.dataset.channel = channel;
-      $new_channel.classList.add('channel');
+       $history.addEventListener('click', function() {
+         load_history(channel);
+         $history.classList.add('hide');
+       });
 
-      $new_channel.addEventListener('click', function() {
-        changePage(channel);
-      }, false);
+       $new_console_wrapper = document.createElement('div');
+       $new_console_wrapper.classList.add('console');
+       $new_console_wrapper.dataset.channel = channel;
 
-      $channels.appendChild($new_channel);
-      $consoles.appendChild($new_console_wrapper);
+       $new_console_wrapper.appendChild($history);
+       $new_console_wrapper.appendChild($new_console);
 
-      if(!channels.length) {
-        changePage(channel);
-      }
+       $new_channel = document.createElement('li');
+       $new_channel.textContent = channel;
+       $new_channel.dataset.channel = channel;
+       $new_channel.classList.add('channel');
 
-      channels[channel] = true;
+       $new_channel.addEventListener('click', function() {
+         changePage(channel);
+       }, false);
 
-    }
+       $channels.appendChild($new_channel);
+       $consoles.appendChild($new_console_wrapper);
 
-    $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
-    $new_line.innerHTML = library.json.prettyPrint(message);
+       if(!channels.length) {
+         changePage(channel);
+       }
 
-    if(is_history) {
+       channels[channel] = true;
 
-      $new_line.classList.add('history');
+     }
 
-      $the_console.insertBefore($new_line, $the_console.firstChild);
+     $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+     $new_line.innerHTML = library.json.prettyPrint(message);
 
-    } else {
+     if(is_history) {
 
-      if(type == 1) {
-        $new_line.classList.add('publish');
-      } else {
-        $new_line.classList.add('subscribe');
-      }
+       $new_line.classList.add('history');
 
-      $the_console.appendChild($new_line);
+       $the_console.insertBefore($new_line, $the_console.firstChild);
+
+     } else {
+
+       if(type == 1) {
+         $new_line.classList.add('publish');
+       } else {
+         $new_line.classList.add('subscribe');
+       }
+
+       $the_console.appendChild($new_line);
+
+     }
 
     }
 
@@ -111,6 +117,7 @@
       $the_channel = document.querySelector('.channel[data-channel="' + channel +'"]');
 
     [].forEach.call($consoles, function(el) {
+      el.classList.remove('show');
       el.classList.add('hide');
     });
 
@@ -186,8 +193,14 @@
             channel = params[3];
             console.log('subscribe to channel ' + channel + ' and message:');
 
-              message = JSON.parse(body)[0][0]
+              message = JSON.parse(body);
+
+              console.log('parsed message is');
               console.log(message);
+
+              if(typeof message !== "undefined") {
+                message = message[0][0];
+              }
 
               render(channel, message, 2);
 
