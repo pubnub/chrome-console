@@ -50,9 +50,9 @@
        $history.classList.add('load-history');
        $history.innerHTML = "&#9650; Load Message History";
 
-       $history.addEventListener('click', function() {
+       $history.addEventListener('click', function(e) {
          load_history(channel);
-         $history.classList.add('hide');
+         e.target.classList.add('hide');
        });
 
        $new_console_wrapper = document.createElement('div');
