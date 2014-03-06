@@ -39,14 +39,15 @@ ul, ol {
   background-color: #ddd;
 }
 #consoles-wrapper {
+}
+.lines {
   position: fixed;
   left: 25%;
   width: 75%;
-  height: 100%;
+  height: 97%;
+  top: 3%;
   word-wrap: break-word;
   overflow-y: scroll;
-}
-.lines {
   font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
 }
 .lines li {
@@ -74,14 +75,20 @@ ul, ol {
   content: "History";
   color: #ddd;
 }
-.load-history {
-  text-align: center;
-  padding: 4px;
+.tools {
+  position: fixed;
+  top: 0px;
   border-bottom: 1px solid #ddd;
   background-color: #efefef;
   font-size: 12px;
+  height: 3%;
+  width: 75%;
+  left: 25%;
 }
-.load-history:hover {
+.tools .tool {
+  display: inline-block;
+}
+.tools .tool:hover {
   cursor: pointer;
   text-decoration: underline;
 }

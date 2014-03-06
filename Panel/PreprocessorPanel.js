@@ -2,6 +2,7 @@
 
   var rendered_channels = {},
     library = {},
+    auto_scroll = {},
     subscribe_key = null;
 
   library.json = {
@@ -25,6 +26,38 @@
     }
   };
 
+  function scrollWatch(el) {
+
+    var div = document.querySelector('.console[data-channel="' + el.dataset.channel + '"] .lines')
+
+    div.onscroll = function() {
+
+      console.log('scroll called');
+      console.log(div.scrollHeight);
+      console.log(div.scrollTop);
+
+      // todo this is working, but this always returns false because it doesn't account for the height of the div
+      if(div.scrollTop == div.scrollHeight) {
+        alert('setting scroll')
+        rendered_channels[el.dataset.channel].auto_scroll = true;
+      } else {
+        rendered_channels[el.dataset.channel].auto_scroll = false;
+      }
+
+    };
+
+    setInterval(function(){
+
+      console.log(rendered_channels)
+
+      if(rendered_channels[el.dataset.channel].auto_scroll) {
+        div.scrollTop = div.scrollHeight;
+      }
+
+    }, 500);
+
+  }
+
   function render(channel_, message, type, is_history) {
 
     if(typeof message !== "undefined") {
@@ -39,67 +72,76 @@
         $new_console = null,
         $the_console = null;
 
-     if (typeof rendered_channels[channel] == 'undefined') {
+      if (typeof rendered_channels[channel] == 'undefined') {
 
-       $new_console = document.createElement('ul');
-       $new_console.classList.add('lines');
+        $new_console = document.createElement('ul');
+        $new_console.classList.add('lines');
 
-       $history = document.createElement('div');
-       $history.classList.add('load-history');
-       $history.innerHTML = "&#9650; Load Message History";
+        $tools = document.createElement('div');
+        $tools.classList.add('tools');
 
-       $history.addEventListener('click', function(e) {
+        $load_history = document.createElement('div');
+        $load_history.classList.add('tool');
+        $load_history.innerHTML = "&#9650; Load Message History";
+
+        $tools.appendChild($load_history);
+
+        $load_history.addEventListener('click', function(e) {
          load_history(channel);
          e.target.classList.add('hide');
-       });
+        });
 
-       $new_console_wrapper = document.createElement('div');
-       $new_console_wrapper.classList.add('console');
-       $new_console_wrapper.classList.add('hide');
-       $new_console_wrapper.dataset.channel = channel;
+        $new_console_wrapper = document.createElement('div');
+        $new_console_wrapper.classList.add('console');
+        $new_console_wrapper.classList.add('hide');
+        $new_console_wrapper.dataset.channel = channel;
 
-       $new_console_wrapper.appendChild($history);
-       $new_console_wrapper.appendChild($new_console);
+        $new_console_wrapper.appendChild($tools);
+        $new_console_wrapper.appendChild($new_console);
 
-       $new_channel = document.createElement('li');
-       $new_channel.textContent = channel_;
-       $new_channel.dataset.channel = channel;
-       $new_channel.classList.add('channel');
+        $new_channel = document.createElement('li');
+        $new_channel.textContent = channel_;
+        $new_channel.dataset.channel = channel;
+        $new_channel.classList.add('channel');
 
-       $new_channel.addEventListener('click', function() {
+        $new_channel.addEventListener('click', function() {
          changePage(channel);
-       }, false);
+        }, false);
 
-       $channels.appendChild($new_channel);
-       $consoles.appendChild($new_console_wrapper);
+        $channels.appendChild($new_channel);
+        $consoles.appendChild($new_console_wrapper);
 
-       if(document.querySelectorAll('#channels .channel').length == 1) {
+        if(document.querySelectorAll('#channels .channel').length == 1) {
          changePage(channel);
-       }
+        }
 
-       rendered_channels[channel] = true;
+        rendered_channels[channel] = {
+          auto_scroll: true
+        };
 
-     }
+        scrollWatch($new_channel);
 
-     $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
-     $new_line.innerHTML = library.json.prettyPrint(message);
+      }
 
-     if(is_history) {
+      $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+      $new_line.innerHTML = library.json.prettyPrint(message);
 
-       $new_line.classList.add('history');
-       $the_console.insertBefore($new_line, $the_console.firstChild);
+      if(is_history) {
 
-     } else {
+        $new_line.classList.add('history');
+        $the_console.insertBefore($new_line, $the_console.firstChild);
 
-       if(type == 1) {
+      } else {
+
+        if(type == 1) {
          $new_line.classList.add('publish');
-       } else {
+        } else {
          $new_line.classList.add('subscribe');
-       }
+        }
 
-       $the_console.appendChild($new_line);
+        $the_console.appendChild($new_line);
 
-     }
+      }
 
     }
 
