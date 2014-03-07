@@ -32,15 +32,15 @@
 
     div.onscroll = function() {
 
-      console.log('scroll called');
-      console.log(div.scrollHeight);
-      console.log(div.scrollTop);
+      console.log(div.scrollHeight)
+      console.log(div.scrollTop + div.offsetHeight)
 
       // todo this is working, but this always returns false because it doesn't account for the height of the div
-      if(div.scrollTop == div.scrollHeight) {
-        alert('setting scroll')
+      if(((div.scrollHeight - 100) < (div.scrollTop + div.offsetHeight))) {
+        console.log('setting auto scroll');
         rendered_channels[el.dataset.channel].auto_scroll = true;
       } else {
+        console.log('removing auto scroll');
         rendered_channels[el.dataset.channel].auto_scroll = false;
       }
 
@@ -48,13 +48,11 @@
 
     setInterval(function(){
 
-      console.log(rendered_channels)
-
       if(rendered_channels[el.dataset.channel].auto_scroll) {
         div.scrollTop = div.scrollHeight;
       }
 
-    }, 500);
+    }, 50);
 
   }
 
@@ -209,8 +207,6 @@
           channel = decodeURIComponent(params[5]);
 
           message = JSON.parse(decodeURIComponent(params[7]));
-          console.log('publish to channel ' + channel + ' and message:');
-          console.log(message);
 
           render(channel, message, 1);
 
@@ -230,21 +226,9 @@
 
           request.getContent(function(body){
 
-            console.log('subscribe to channel ' + channel + ' and message:');
-
               parsed = JSON.parse(body);
 
-              console.log('parsed message is');
-              console.log(parsed);
-
-              console.log(request)
-              console.log(body)
-
               if(parsed) {
-
-                console.log('parsed and params')
-                console.log(params)
-                console.log(parsed)
 
                 if(typeof parsed[2] !== "undefined") {
 
@@ -253,7 +237,6 @@
 
                   for(var i = 0; i < parsed[0].length; i++) {
 
-                    console.log('rendering channel ' + channels[i] + ' and message ' + parsed[0][i])
                     render(channels[i], parsed[0][i], 2);
 
                   }
