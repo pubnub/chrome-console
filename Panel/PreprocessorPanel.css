@@ -44,8 +44,7 @@ ul, ol {
   position: fixed;
   left: 25%;
   width: 75%;
-  height: 97%;
-  top: 3%;
+  bottom: 0px;
   word-wrap: break-word;
   overflow-y: scroll;
   font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
@@ -81,7 +80,8 @@ ul, ol {
   border-bottom: 1px solid #ddd;
   background-color: #efefef;
   font-size: 12px;
-  height: 3%;
+  height: 29px;
+  line-height: 29px;
   width: 75%;
   left: 25%;
 }
@@ -91,6 +91,13 @@ ul, ol {
 .tools .tool:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+.tools .tool.disabled {
+  color: #ccc;
+}
+.tools .tool.disabled:hover {
+  text-decoration: none;
+  cursor: initial;
 }
 .json-key {
   color: brown;

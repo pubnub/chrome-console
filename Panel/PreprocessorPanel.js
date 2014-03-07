@@ -28,19 +28,13 @@
 
   function scrollWatch(el) {
 
-    var div = document.querySelector('.console[data-channel="' + el.dataset.channel + '"] .lines')
+    var div = document.querySelector('.console[data-channel="' + el.dataset.channel + '"] .lines');
 
     div.onscroll = function() {
 
-      console.log(div.scrollHeight)
-      console.log(div.scrollTop + div.offsetHeight)
-
-      // todo this is working, but this always returns false because it doesn't account for the height of the div
       if(((div.scrollHeight - 100) < (div.scrollTop + div.offsetHeight))) {
-        console.log('setting auto scroll');
         rendered_channels[el.dataset.channel].auto_scroll = true;
       } else {
-        console.log('removing auto scroll');
         rendered_channels[el.dataset.channel].auto_scroll = false;
       }
 
@@ -85,8 +79,8 @@
         $tools.appendChild($load_history);
 
         $load_history.addEventListener('click', function(e) {
-         load_history(channel);
-         e.target.classList.add('hide');
+          load_history(channel);
+          e.target.classList.add('disabled');
         });
 
         $new_console_wrapper = document.createElement('div');
@@ -118,6 +112,7 @@
         };
 
         scrollWatch($new_channel);
+        resizeLines();
 
       }
 
@@ -176,8 +171,20 @@
 
         history[0].reverse();
 
-        for(var i = 0; i < history[0].length; i++) {
-          render(channel, history[0][i], 0, true);
+        if(!history[0].length) {
+
+          alert('No history for this channel.');
+
+        } else {
+
+          for(var i = 0; i < history[0].length; i++) {
+            render(channel, history[0][i], 0, true);
+          }
+
+          // scroll to top
+          rendered_channels[channel].auto_scroll = false;
+          document.querySelector('.console[data-channel="' + channel + '"] .lines').scrollTop = 0;
+
         }
 
       },
@@ -185,7 +192,7 @@
 
   }
 
-  function start() {
+  function bindRequest() {
 
     chrome.devtools.network.onRequestFinished.addListener(function(request) {
 
@@ -266,6 +273,28 @@
       }
 
     });
+
+  }
+
+  function resizeLines() {
+
+    var $lines = document.querySelectorAll('.lines'),
+      new_height = (window.innerHeight - 30);
+
+    console.log('setting height as ' + new_height);
+
+    [].forEach.call($lines, function(el) {
+      el.style.height = new_height;
+    });
+
+  }
+
+  function start() {
+
+    bindRequest();
+    resizeLines();
+
+    window.onresize = resizeLines;
 
   }
 
