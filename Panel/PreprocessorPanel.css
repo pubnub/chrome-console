@@ -87,6 +87,8 @@ ul, ol {
 }
 .tools .tool {
   display: inline-block;
+  margin-left: 4px;
+  margin-right: 16px;
 }
 .tools .tool:hover {
   cursor: pointer;

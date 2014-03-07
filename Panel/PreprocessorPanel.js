@@ -62,16 +62,32 @@
         $consoles = document.querySelector('#consoles'),
         $new_channel = null
         $new_console = null,
-        $the_console = null;
+        $the_console = null,
+        $load_history = null,
+        $clear_lines = null;
 
       if (typeof rendered_channels[channel] == 'undefined') {
 
+        // create new console for output
         $new_console = document.createElement('ul');
         $new_console.classList.add('lines');
 
+        // create new div for tools
         $tools = document.createElement('div');
         $tools.classList.add('tools');
 
+        // clear output tool
+        $clear_lines = document.createElement('div');
+        $clear_lines.classList.add('tool');
+        $clear_lines.innerHTML = "&Oslash; Clear Output";
+
+        $tools.appendChild($clear_lines);
+
+        $clear_lines.addEventListener('click', function(e) {
+          document.querySelector('.console[data-channel="' + channel + '"] .lines').innerHTML = "";
+        });
+
+        // load history tool
         $load_history = document.createElement('div');
         $load_history.classList.add('tool');
         $load_history.innerHTML = "&#9650; Load Message History";
@@ -83,6 +99,7 @@
           e.target.classList.add('disabled');
         });
 
+        // wrapper for console
         $new_console_wrapper = document.createElement('div');
         $new_console_wrapper.classList.add('console');
         $new_console_wrapper.classList.add('hide');
@@ -91,6 +108,7 @@
         $new_console_wrapper.appendChild($tools);
         $new_console_wrapper.appendChild($new_console);
 
+        // new entry in channels pane
         $new_channel = document.createElement('li');
         $new_channel.textContent = channel_;
         $new_channel.dataset.channel = channel;
@@ -107,10 +125,12 @@
          changePage(channel);
         }
 
+        // set property for channels data
         rendered_channels[channel] = {
           auto_scroll: true
         };
 
+        // bind events
         scrollWatch($new_channel);
         resizeLines();
 
