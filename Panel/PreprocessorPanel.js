@@ -26,27 +26,31 @@
     }
   };
 
-  function scrollWatch(el) {
+  function scrollWatch(channel) {
 
-    var div = document.querySelector('.console[data-channel="' + el.dataset.channel + '"] .lines');
+    var div = document.querySelector('.console[data-channel="' + channel + '"] .lines');
 
     div.onscroll = function() {
 
-      if(((div.scrollHeight - 100) < (div.scrollTop + div.offsetHeight))) {
-        rendered_channels[el.dataset.channel].auto_scroll = true;
+      if(((div.scrollHeight - 30) < (div.scrollTop + div.offsetHeight))) {
+        rendered_channels[channel].auto_scroll = true;
       } else {
-        rendered_channels[el.dataset.channel].auto_scroll = false;
+        rendered_channels[channel].auto_scroll = false;
       }
 
     };
 
-    setInterval(function(){
+  }
 
-      if(rendered_channels[el.dataset.channel].auto_scroll) {
-        div.scrollTop = div.scrollHeight;
-      }
+  function autoScroll(channel) {
 
-    }, 50);
+    console.log('auto scrolling');
+
+    var div = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+
+    if(rendered_channels[channel].auto_scroll) {
+      div.scrollTop = div.scrollHeight;
+    }
 
   }
 
@@ -131,7 +135,7 @@
         };
 
         // bind events
-        scrollWatch($new_channel);
+        scrollWatch(channel);
         resizeLines();
 
       }
@@ -155,6 +159,8 @@
         $the_console.appendChild($new_line);
 
       }
+
+      autoScroll(channel);
 
     }
 
