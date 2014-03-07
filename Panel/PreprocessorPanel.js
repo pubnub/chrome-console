@@ -44,8 +44,6 @@
 
   function autoScroll(channel) {
 
-    console.log('auto scrolling');
-
     var div = document.querySelector('.console[data-channel="' + channel + '"] .lines');
 
     if(rendered_channels[channel].auto_scroll) {
@@ -54,13 +52,14 @@
 
   }
 
-  function render(channel_, message, type, is_history) {
+  function render(channel_, message, timestamp, type) {
+
+    console.log('type ' + type + ' and timestamp ' + timestamp);
 
     if(typeof message !== "undefined") {
 
      var
         channel = escape(channel_),
-        is_history = is_history || false,
         $new_line = document.createElement('li'),
         $channels = document.querySelector('#channels'),
         $consoles = document.querySelector('#consoles'),
@@ -131,7 +130,8 @@
 
         // set property for channels data
         rendered_channels[channel] = {
-          auto_scroll: true
+          auto_scroll: true,
+          last_timestamp: timestamp
         };
 
         // bind events
@@ -143,7 +143,7 @@
       $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
       $new_line.innerHTML = library.json.prettyPrint(message);
 
-      if(is_history) {
+      if(type == 3) {
 
         $new_line.classList.add('history');
         $the_console.insertBefore($new_line, $the_console.firstChild);
@@ -193,6 +193,7 @@
 
     pubnub.history({
       channel: channel,
+      start: rendered_channels[channel].last_timestamp - 1,
       callback: function(history){
 
         history[0].reverse();
@@ -204,7 +205,7 @@
         } else {
 
           for(var i = 0; i < history[0].length; i++) {
-            render(channel, history[0][i], 0, true);
+            render(channel, history[0][i], history[1], 3);
           }
 
           // scroll to top
@@ -241,7 +242,7 @@
 
           message = JSON.parse(decodeURIComponent(params[7]));
 
-          render(channel, message, 1);
+          render(channel, message, (new Date().getTime() * 10000), 1);
 
         }
 
@@ -269,9 +270,7 @@
                   channels = parsed[2].split(',');
 
                   for(var i = 0; i < parsed[0].length; i++) {
-
-                    render(channels[i], parsed[0][i], 2);
-
+                    render(channels[i], parsed[0][i], params[5], 2);
                   }
 
                 } else {
@@ -283,7 +282,7 @@
                     message = parsed[0][0];
                   }
 
-                  render(channel, message, 2);
+                  render(channel, message, params[5], 2);
 
                 }
 
@@ -306,8 +305,6 @@
 
     var $lines = document.querySelectorAll('.lines'),
       new_height = (window.innerHeight - 30);
-
-    console.log('setting height as ' + new_height);
 
     [].forEach.call($lines, function(el) {
       el.style.height = new_height;
