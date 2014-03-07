@@ -7,8 +7,8 @@ PubNub Chrome Console
 
 ## Step 2: Load the unpacked extension
 
-In Chrome, open chrome://extensions/
-Click + Developer mode
-Click Load unpacked extension…
-Navigate to the extension’s folder and click OK
-Delete the (extracted) folder (the extension was copied) 
+1. In Chrome, open chrome://extensions/
+1. Click + Developer mode
+1. Click Load unpacked extension…
+1. Navigate to the extension’s folder and click OK
+1. Delete the (extracted) folder (the extension was copied) 
