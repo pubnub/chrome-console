@@ -88,18 +88,19 @@
 
         $clear_lines.addEventListener('click', function(e) {
           document.querySelector('.console[data-channel="' + channel + '"] .lines').innerHTML = "";
+          rendered_channels[channel].last_timestamp = new Date().getTime() * 10000;
+          console.log(rendered_channels[channel].last_timestamp)
         });
 
         // load history tool
         $load_history = document.createElement('div');
         $load_history.classList.add('tool');
-        $load_history.innerHTML = "&#9650; Load Message History";
+        $load_history.innerHTML = "&#9650; Previous 30 Seconds";
 
         $tools.appendChild($load_history);
 
         $load_history.addEventListener('click', function(e) {
           load_history(channel);
-          e.target.classList.add('disabled');
         });
 
         // wrapper for console
@@ -191,10 +192,17 @@
 
   function load_history(channel) {
 
+    console.log('loading history from ' + rendered_channels[channel].last_timestamp);
+
+    var since_when = rendered_channels[channel].last_timestamp - (30 * 10000000);
+
     pubnub.history({
       channel: channel,
-      start: rendered_channels[channel].last_timestamp - 1,
+      start: since_when,
+      end: rendered_channels[channel].last_timestamp,
       callback: function(history){
+
+        console.log('somehow channel has been set to ' + channel)
 
         history[0].reverse();
 
@@ -205,11 +213,12 @@
         } else {
 
           for(var i = 0; i < history[0].length; i++) {
-            render(channel, history[0][i], history[1], 3);
+            render(decodeURIComponent(channel), history[0][i], history[1], 3);
           }
 
           // scroll to top
           rendered_channels[channel].auto_scroll = false;
+          rendered_channels[channel].last_timestamp = since_when;
           document.querySelector('.console[data-channel="' + channel + '"] .lines').scrollTop = 0;
 
         }
@@ -270,7 +279,7 @@
                   channels = parsed[2].split(',');
 
                   for(var i = 0; i < parsed[0].length; i++) {
-                    render(channels[i], parsed[0][i], params[5], 2);
+                    render(channels[i], parsed[0][i], (new Date().getTime() * 10000), 2);
                   }
 
                 } else {
@@ -282,7 +291,7 @@
                     message = parsed[0][0];
                   }
 
-                  render(channel, message, params[5], 2);
+                  render(channel, message, (new Date().getTime() * 10000), 2);
 
                 }
 
