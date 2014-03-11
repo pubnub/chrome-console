@@ -1,12 +1,14 @@
 {
   "name": "PubNub Console",
-  "version": "0.1",
-  "description": "Inspect PubNub traffic.",
+  "version": "0.3",
+  "description": "Monitor PubNub traffic filtered by channel.",
   "devtools_page": "chrome-preprocessor.html",
   "manifest_version": 2,
-  "icons": { "16": "16.png",
-             "48": "48.png",
-            "128": "128.png" },
+  "icons": {
+    "16": "16.png",
+    "48": "48.png",
+    "128": "128.png"
+  },
   "permissions": [
     "tabs"
   ]

@@ -95,7 +95,7 @@
         // load history tool
         $load_history = document.createElement('div');
         $load_history.classList.add('tool');
-        $load_history.innerHTML = "&#9650; Previous 30 Seconds";
+        $load_history.innerHTML = "&#9650; Previous 2 Minutes";
 
         $tools.appendChild($load_history);
 
@@ -194,7 +194,7 @@
 
     console.log('loading history from ' + rendered_channels[channel].last_timestamp);
 
-    var since_when = rendered_channels[channel].last_timestamp - (30 * 10000000);
+    var since_when = rendered_channels[channel].last_timestamp - (120 * 10000000);
 
     pubnub.history({
       channel: channel,
