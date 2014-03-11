@@ -3,7 +3,7 @@ PubNub Chrome Console
 
 ## Step 1: Clone this repository
 
-    git clone https://github.com/ianjennings/pubnub-chrome-console.git
+    git clone https://github.com/pubnub/chrome-console.git
 
 ## Step 2: Load the unpacked extension
 
