@@ -149,7 +149,6 @@
 
       $notes = document.createElement('div');
       $notes.classList.add('notes');
-      $notes.innerHTML = library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds());
 
       $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
       $new_line.innerHTML = library.json.prettyPrint(message);
@@ -167,6 +166,7 @@
         } else {
          $notes.classList.add('subscribe');
         }
+        $notes.innerHTML = library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds());
 
         $the_console.appendChild($new_line);
 
