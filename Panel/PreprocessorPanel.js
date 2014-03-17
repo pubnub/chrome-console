@@ -5,24 +5,28 @@
     auto_scroll = {},
     subscribe_key = null;
 
-  library.json = {
-    replacer: function(match, pIndent, pKey, pVal, pEnd) {
-      var key = '<span class=json-key>';
-      var val = '<span class=json-value>';
-      var str = '<span class=json-string>';
-      var r = pIndent || '';
-      if (pKey)
-         r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
-      if (pVal)
-         r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
-      return r + (pEnd || '');
-    },
-    prettyPrint: function(obj) {
-      var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
-      return JSON.stringify(obj, null, 2)
-       .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
-       .replace(/</g, '&lt;').replace(/>/g, '&gt;')
-       .replace(jsonLine, library.json.replacer);
+
+  library = {
+    pad: function(n) { return ("0" + n).slice(-2); },
+    json: {
+      replacer: function(match, pIndent, pKey, pVal, pEnd) {
+        var key = '<span class=json-key>';
+        var val = '<span class=json-value>';
+        var str = '<span class=json-string>';
+        var r = pIndent || '';
+        if (pKey)
+           r = r + key + pKey.replace(/[": ]/g, '') + '</span>: ';
+        if (pVal)
+           r = r + (pVal[0] == '"' ? str : val) + pVal + '</span>';
+        return r + (pEnd || '');
+      },
+      prettyPrint: function(obj) {
+        var jsonLine = /^( *)("[\w]+": )?("[^"]*"|[\w.+-]*)?([,[{])?$/mg;
+        return JSON.stringify(obj, null, 2)
+         .replace(/&/g, '&amp;').replace(/\\"/g, '&quot;')
+         .replace(/</g, '&lt;').replace(/>/g, '&gt;')
+         .replace(jsonLine, library.json.replacer);
+      }
     }
   };
 
@@ -59,6 +63,7 @@
     if(typeof message !== "undefined") {
 
      var
+        date = new Date(timestamp / 1000),
         channel = escape(channel_),
         $new_line = document.createElement('li'),
         $channels = document.querySelector('#channels'),
@@ -67,7 +72,8 @@
         $new_console = null,
         $the_console = null,
         $load_history = null,
-        $clear_lines = null;
+        $clear_lines = null,
+        $notes = null;
 
       if (typeof rendered_channels[channel] == 'undefined') {
 
@@ -141,20 +147,25 @@
 
       }
 
+      $notes = document.createElement('div');
+      $notes.classList.add('notes');
+      $notes.innerHTML = library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds());
+
       $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
       $new_line.innerHTML = library.json.prettyPrint(message);
+      $new_line.appendChild($notes);
 
       if(type == 3) {
 
-        $new_line.classList.add('history');
+        $notes.classList.add('history');
         $the_console.insertBefore($new_line, $the_console.firstChild);
 
       } else {
 
         if(type == 1) {
-         $new_line.classList.add('publish');
+         $notes.classList.add('publish');
         } else {
-         $new_line.classList.add('subscribe');
+         $notes.classList.add('subscribe');
         }
 
         $the_console.appendChild($new_line);

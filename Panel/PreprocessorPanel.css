@@ -55,22 +55,26 @@ ul, ol {
   position: relative;
   white-space: pre;
 }
-.lines li:after {
+.lines li .notes {
   position: absolute;
   right: 4px;
   top: 4px;
   font-size: 10px;
   font-family: 'Lucida Grande', sans-serif;
+  color: #ccc;
 }
-.lines li.publish:after {
+.lines li .notes:before {
+  margin-right: 4px;
+}
+.lines li .notes.publish:before {
   content: "Publish";
   color: #a91c23;
 }
-.lines li.subscribe:after {
+.lines li .notes.subscribe:before {
   content: "Subscribe";
   color: #3394bf;
 }
-.lines li.history:after {
+.lines li .notes.history:before {
   content: "History";
   color: #ddd;
 }
