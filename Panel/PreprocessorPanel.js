@@ -73,6 +73,7 @@
         $the_console = null,
         $load_history = null,
         $clear_lines = null,
+        $filter = null,
         $notes = null;
 
       if (typeof rendered_channels[channel] == 'undefined') {
@@ -108,6 +109,13 @@
         $load_history.addEventListener('click', function(e) {
           load_history(channel);
         });
+
+        // filter tool
+        $filter = document.createElement("select");
+        $filter.innerHTML = '<option value="0">All Messages</option><option value="1">Only Subscribe</option><option value="2">Only Publish</option>';
+
+        $filter.classList.add('tool');
+        $tools.appendChild($filter);
 
         // wrapper for console
         $new_console_wrapper = document.createElement('div');
