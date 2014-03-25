@@ -86,37 +86,6 @@
         $tools = document.createElement('div');
         $tools.classList.add('tools');
 
-        // clear output tool
-        $clear_lines = document.createElement('div');
-        $clear_lines.classList.add('tool');
-        $clear_lines.innerHTML = "&Oslash; Clear Output";
-
-        $tools.appendChild($clear_lines);
-
-        $clear_lines.addEventListener('click', function(e) {
-          document.querySelector('.console[data-channel="' + channel + '"] .lines').innerHTML = "";
-          rendered_channels[channel].last_timestamp = new Date().getTime() * 10000;
-          console.log(rendered_channels[channel].last_timestamp)
-        });
-
-        // load history tool
-        $load_history = document.createElement('div');
-        $load_history.classList.add('tool');
-        $load_history.innerHTML = "&#9650; Previous 2 Minutes";
-
-        $tools.appendChild($load_history);
-
-        $load_history.addEventListener('click', function(e) {
-          load_history(channel);
-        });
-
-        // filter tool
-        $filter = document.createElement("select");
-        $filter.innerHTML = '<option value="0">All Messages</option><option value="1">Only Subscribe</option><option value="2">Only Publish</option>';
-
-        $filter.classList.add('tool');
-        $tools.appendChild($filter);
-
         // wrapper for console
         $new_console_wrapper = document.createElement('div');
         $new_console_wrapper.classList.add('console');
@@ -139,6 +108,58 @@
         $channels.appendChild($new_channel);
         $consoles.appendChild($new_console_wrapper);
 
+        // clear output tool
+        $clear_lines = document.createElement('a');
+        $clear_lines.classList.add('tool');
+        $clear_lines.innerHTML = "&Oslash; Clear Output";
+
+        $tools.appendChild($clear_lines);
+
+        $clear_lines.addEventListener('click', function(e) {
+          document.querySelector('.console[data-channel="' + channel + '"] .lines').innerHTML = "";
+          rendered_channels[channel].last_timestamp = new Date().getTime() * 10000;
+          console.log(rendered_channels[channel].last_timestamp)
+        });
+
+        // load history tool
+        $load_history = document.createElement('a');
+        $load_history.classList.add('tool');
+        $load_history.innerHTML = "&#9650; Previous 2 Minutes";
+
+        $tools.appendChild($load_history);
+
+        $load_history.addEventListener('click', function(e) {
+          load_history(channel);
+        });
+
+        // filter tool
+        $filter = document.createElement("select");
+        $filter.innerHTML = '<option value="0">All Messages</option><option value="1">Only Subscribe</option><option value="2">Only Publish</option>';
+
+        $filter.classList.add('tool');
+        $filter.classList.add('filter');
+
+        $tools.appendChild($filter);
+
+        $filter.onchange = function(e) {
+
+          [].forEach.call($new_console_wrapper.querySelectorAll('li'), function(el) {
+             el.classList.remove('hide');
+          });
+
+          if(e.srcElement.options[e.srcElement.selectedIndex].value == 1) {
+            [].forEach.call($new_console_wrapper.querySelectorAll('.publish'), function(el) {
+               el.classList.add('hide');
+            });
+          }
+          if(e.srcElement.options[e.srcElement.selectedIndex].value == 2) {
+            [].forEach.call($new_console_wrapper.querySelectorAll('.subscribe'), function(el) {
+               el.classList.add('hide');
+            });
+          }
+
+        };
+
         if(document.querySelectorAll('#channels .channel').length == 1) {
          changePage(channel);
         }
@@ -158,22 +179,38 @@
       $notes = document.createElement('div');
       $notes.classList.add('notes');
 
-      $the_console = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+      $the_console_wrapper = document.querySelector('.console[data-channel="' + channel + '"]');
+      $the_console = $the_console_wrapper.querySelector('.lines');
       $new_line.innerHTML = library.json.prettyPrint(message);
       $new_line.appendChild($notes);
 
       if(type == 3) {
 
-        $notes.classList.add('history');
+        $new_line.classList.add('history');
         $the_console.insertBefore($new_line, $the_console.firstChild);
 
       } else {
 
+        console.log($the_console_wrapper)
+
         if(type == 1) {
-         $notes.classList.add('publish');
+
+          $new_line.classList.add('publish');
+
+          if($the_console_wrapper.querySelector('.tool.filter').value == 1) {
+            $new_line.classList.add('hide');
+          }
+
         } else {
-         $notes.classList.add('subscribe');
+
+         $new_line.classList.add('subscribe');
+
+          if($the_console_wrapper.querySelector('.tool.filter').value == 2) {
+            $new_line.classList.add('hide');
+          }
+
         }
+
         $notes.innerHTML = library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds());
 
         $the_console.appendChild($new_line);

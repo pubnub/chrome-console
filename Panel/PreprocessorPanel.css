@@ -66,15 +66,15 @@ ul, ol {
 .lines li .notes:before {
   margin-right: 4px;
 }
-.lines li .notes.publish:before {
+.lines li.publish .notes:before {
   content: "Publish";
   color: #a91c23;
 }
-.lines li .notes.subscribe:before {
+.lines li.subscribe .notes:before {
   content: "Subscribe";
   color: #3394bf;
 }
-.lines li .notes.history:before {
+.lines li.history .notes:before {
   content: "History";
   color: #ddd;
 }
@@ -93,10 +93,6 @@ ul, ol {
   display: inline-block;
   margin-left: 4px;
   margin-right: 16px;
-}
-.tools .tool:hover {
-  cursor: pointer;
-  text-decoration: underline;
 }
 .tools .tool.disabled {
   color: #ccc;
