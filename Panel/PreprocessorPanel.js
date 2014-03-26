@@ -90,19 +90,19 @@
 
         // new entry in channels pane
         $new_channel = $('<li class="channel" data-channel="' + channel + '">' + channel_ + '</li>');
-
-        $new_channel.bind('click', function() {
-          changePage(channel);
-        }, false);
-
         $channels.append($new_channel);
+
+        $new_channel.click(function() {
+          changePage(channel);
+        });
+
         $consoles.append($new_console_wrapper);
 
         // clear output tool
         $clear_lines = $('<a class="tool">&Oslash; Clear</a>');
         $tools.append($clear_lines);
 
-        $clear_lines.bind('click', function(e) {
+        $clear_lines.click(function(e) {
           $('.console[data-channel="' + channel + '"] .lines').html('');
           rendered_channels[channel].last_timestamp = new Date().getTime() * 10000;
         });
@@ -111,7 +111,7 @@
         $load_history = $('<a class="tool">&#9650; Previous 2 Minutes</a>');
         $tools.append($load_history);
 
-        $load_history.bind('click', function(e) {
+        $load_history.click(function(e) {
           load_history(channel);
         });
 
