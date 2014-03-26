@@ -5,7 +5,6 @@
     auto_scroll = {},
     subscribe_key = null;
 
-
   library = {
     pad: function(n) { return ("0" + n).slice(-2); },
     json: {
@@ -32,42 +31,42 @@
 
   function scrollWatch(channel) {
 
-    var div = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+    var $div = $('.console[data-channel="' + channel + '"] .lines');
 
-    div.onscroll = function() {
+    $div.scroll(function() {
 
-      if(((div.scrollHeight - 30) < (div.scrollTop + div.offsetHeight))) {
+      if((($div.prop('scrollHeight') - 30) < ($div.scrollTop() + $div.height()))) {
         rendered_channels[channel].auto_scroll = true;
       } else {
         rendered_channels[channel].auto_scroll = false;
       }
 
-    };
+    });
 
   }
 
   function autoScroll(channel) {
 
-    var div = document.querySelector('.console[data-channel="' + channel + '"] .lines');
+    var $div = $('.console[data-channel="' + channel + '"] .lines');
 
     if(rendered_channels[channel].auto_scroll) {
-      div.scrollTop = div.scrollHeight;
+      $div.prop('scrollTop', $div.prop('scrollHeight'));
     }
 
   }
 
   function render(channel_, message, timestamp, type) {
 
-    console.log('type ' + type + ' and timestamp ' + timestamp);
+    // console.log('type ' + type + ' and timestamp ' + timestamp);
 
     if(typeof message !== "undefined") {
 
      var
         date = new Date(timestamp / 1000),
         channel = escape(channel_),
-        $new_line = document.createElement('li'),
-        $channels = document.querySelector('#channels'),
-        $consoles = document.querySelector('#consoles'),
+        $new_line = $('<li></li>'),
+        $channels = $('#channels'),
+        $consoles = $('#consoles'),
         $new_channel = null
         $new_console = null,
         $the_console = null,
@@ -79,88 +78,72 @@
       if (typeof rendered_channels[channel] == 'undefined') {
 
         // create new console for output
-        $new_console = document.createElement('ul');
-        $new_console.classList.add('lines');
+        $new_console = $('<ul class="lines"></ul>');
 
         // create new div for tools
-        $tools = document.createElement('div');
-        $tools.classList.add('tools');
+        $tools = $('<div class="tools"></div>');
 
         // wrapper for console
-        $new_console_wrapper = document.createElement('div');
-        $new_console_wrapper.classList.add('console');
-        $new_console_wrapper.classList.add('hide');
-        $new_console_wrapper.dataset.channel = channel;
-
-        $new_console_wrapper.appendChild($tools);
-        $new_console_wrapper.appendChild($new_console);
+        $new_console_wrapper = $('<div class="console hide" data-channel="' + channel + '"></div>');
+        $new_console_wrapper.append($tools);
+        $new_console_wrapper.append($new_console);
 
         // new entry in channels pane
-        $new_channel = document.createElement('li');
-        $new_channel.textContent = channel_;
-        $new_channel.dataset.channel = channel;
-        $new_channel.classList.add('channel');
+        $new_channel = $('<li class="channel" data-channel="' + channel + '">' + channel_ + '</li>');
 
-        $new_channel.addEventListener('click', function() {
-         changePage(channel);
+        $new_channel.bind('click', function() {
+          changePage(channel);
         }, false);
 
-        $channels.appendChild($new_channel);
-        $consoles.appendChild($new_console_wrapper);
+        $channels.append($new_channel);
+        $consoles.append($new_console_wrapper);
 
         // clear output tool
-        $clear_lines = document.createElement('a');
-        $clear_lines.classList.add('tool');
-        $clear_lines.innerHTML = "&Oslash; Clear Output";
+        $clear_lines = $('<a class="tool">&Oslash; Clear</a>');
+        $tools.append($clear_lines);
 
-        $tools.appendChild($clear_lines);
-
-        $clear_lines.addEventListener('click', function(e) {
-          document.querySelector('.console[data-channel="' + channel + '"] .lines').innerHTML = "";
+        $clear_lines.bind('click', function(e) {
+          $('.console[data-channel="' + channel + '"] .lines').html('');
           rendered_channels[channel].last_timestamp = new Date().getTime() * 10000;
-          console.log(rendered_channels[channel].last_timestamp)
         });
 
         // load history tool
-        $load_history = document.createElement('a');
-        $load_history.classList.add('tool');
-        $load_history.innerHTML = "&#9650; Previous 2 Minutes";
+        $load_history = $('<a class="tool">&#9650; Previous 2 Minutes</a>');
+        $tools.append($load_history);
 
-        $tools.appendChild($load_history);
-
-        $load_history.addEventListener('click', function(e) {
+        $load_history.bind('click', function(e) {
           load_history(channel);
         });
 
         // filter tool
-        $filter = document.createElement("select");
-        $filter.innerHTML = '<option value="0">All Messages</option><option value="1">Only Subscribe</option><option value="2">Only Publish</option>';
+        $filter = $('<select class="tool filter"> \
+          <option value="0">All Messages</option> \
+          <option value="1">Only Subscribe</option> \
+          <option value="2">Only Publish</option> \
+        </select>');
 
-        $filter.classList.add('tool');
-        $filter.classList.add('filter');
+        $tools.append($filter);
 
-        $tools.appendChild($filter);
+        $filter.on('change', function() {
 
-        $filter.onchange = function(e) {
-
-          [].forEach.call($new_console_wrapper.querySelectorAll('li'), function(el) {
-             el.classList.remove('hide');
+          $new_console_wrapper.find('li').each(function(i, el) {
+            $(el).removeClass('hide');
           });
 
-          if(e.srcElement.options[e.srcElement.selectedIndex].value == 1) {
-            [].forEach.call($new_console_wrapper.querySelectorAll('.publish'), function(el) {
-               el.classList.add('hide');
+          if(this.value == 1) {
+            $new_console_wrapper.find('.publish').each(function(i, el) {
+              $(el).addClass('hide');
             });
           }
-          if(e.srcElement.options[e.srcElement.selectedIndex].value == 2) {
-            [].forEach.call($new_console_wrapper.querySelectorAll('.subscribe'), function(el) {
-               el.classList.add('hide');
+          if(this.value == 2) {
+            $new_console_wrapper.find('.subscribe').each(function(i, el) {
+              $(el).addClass('hide');
             });
           }
 
-        };
+        });
 
-        if(document.querySelectorAll('#channels .channel').length == 1) {
+        if($('#channels .channel').length == 1) {
          changePage(channel);
         }
 
@@ -176,36 +159,34 @@
 
       }
 
-      $notes = document.createElement('div');
-      $notes.classList.add('notes');
+      $notes = $('<div></div>');
+      $notes.addClass('notes');
 
-      $the_console_wrapper = document.querySelector('.console[data-channel="' + channel + '"]');
-      $the_console = $the_console_wrapper.querySelector('.lines');
-      $new_line.innerHTML = library.json.prettyPrint(message);
-      $new_line.appendChild($notes);
+      $the_console_wrapper = $('.console[data-channel="' + channel + '"]');
+      $the_console = $($the_console_wrapper.find('.lines')[0]);
+      $new_line.html(library.json.prettyPrint(message));
+      $new_line.append($notes);
 
       if(type == 3) {
 
-        $new_line.classList.add('history');
-        $the_console.insertBefore($new_line, $the_console.firstChild);
+        $new_line.addClass('history');
+        $the_console.prepend($new_line);
 
       } else {
 
-        console.log($the_console_wrapper)
-
         if(type == 1) {
 
-          $new_line.classList.add('publish');
+          $new_line.addClass('publish');
 
-          if($the_console_wrapper.querySelector('.tool.filter').value == 1) {
+          if($the_console_wrapper.find('.tool.filter')[0].value == 1) {
             $new_line.classList.add('hide');
           }
 
         } else {
 
-         $new_line.classList.add('subscribe');
+         $new_line.addClass('subscribe');
 
-          if($the_console_wrapper.querySelector('.tool.filter').value == 2) {
+          if($the_console_wrapper.find('.tool.filter')[0].value == 2) {
             $new_line.classList.add('hide');
           }
 
@@ -213,7 +194,7 @@
 
         $notes.innerHTML = library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds());
 
-        $the_console.appendChild($new_line);
+        $the_console.append($new_line);
 
       }
 
@@ -225,24 +206,24 @@
 
   function changePage(channel) {
 
-    var $consoles = document.querySelectorAll('.console'),
-      $the_console = document.querySelector('.console[data-channel="' + channel + '"]'),
-      $channels = document.querySelectorAll('.channel'),
-      $the_channel = document.querySelector('.channel[data-channel="' + channel +'"]');
+    var $consoles = $('.console'),
+      $the_console = $('.console[data-channel="' + channel + '"]'),
+      $channels = $('.channel'),
+      $the_channel = $('.channel[data-channel="' + channel +'"]');
 
-    [].forEach.call($consoles, function(el) {
-      el.classList.remove('show');
-      el.classList.add('hide');
+    $consoles.each(function(i, el) {
+      $(el).removeClass('show');
+      $(el).addClass('hide');
     });
 
-    [].forEach.call($channels, function(el) {
-      el.classList.remove('active');
+    $channels.each(function(i, el) {
+      $(el).removeClass('active');
     });
 
-    $the_console.classList.remove('hide');
-    $the_console.classList.add('show');
+    $the_console.removeClass('hide');
+    $the_console.addClass('show');
 
-    $the_channel.classList.add('active');
+    $the_channel.addClass('active');
 
   }
 
@@ -257,8 +238,6 @@
       start: since_when,
       end: rendered_channels[channel].last_timestamp,
       callback: function(history){
-
-        console.log('somehow channel has been set to ' + channel)
 
         history[0].reverse();
 
@@ -275,7 +254,7 @@
           // scroll to top
           rendered_channels[channel].auto_scroll = false;
           rendered_channels[channel].last_timestamp = since_when;
-          document.querySelector('.console[data-channel="' + channel + '"] .lines').scrollTop = 0;
+          $('.console[data-channel="' + channel + '"] .lines').prop('scrollTop', 0);
 
         }
 
@@ -368,11 +347,12 @@
 
   function resizeLines() {
 
-    var $lines = document.querySelectorAll('.lines'),
-      new_height = (window.innerHeight - 30);
+    var $lines = $('.lines'),
+      new_height = ($(window).height() - 30);
 
-    [].forEach.call($lines, function(el) {
-      el.style.height = new_height;
+    $lines.each(function(i, el) {
+      $(el).height(new_height);
+      console.log($(el).height());
     });
 
   }
@@ -382,7 +362,7 @@
     bindRequest();
     resizeLines();
 
-    window.onresize = resizeLines;
+    $(window).resize(resizeLines);
 
   }
 
