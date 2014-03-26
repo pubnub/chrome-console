@@ -97,6 +97,12 @@ ul, ol {
 .tools .tool.disabled {
   color: #ccc;
 }
+.tools a.tool {
+  text-decoration: none;
+}
+.tools a.tool:hover {
+  text-decoration: underline;
+}
 .tools .tool.disabled:hover {
   text-decoration: none;
   cursor: initial;

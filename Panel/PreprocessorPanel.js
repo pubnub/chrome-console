@@ -94,25 +94,28 @@
 
         $new_channel.click(function() {
           changePage(channel);
+          return false;
         });
 
         $consoles.append($new_console_wrapper);
 
         // clear output tool
-        $clear_lines = $('<a class="tool">&Oslash; Clear</a>');
+        $clear_lines = $('<a class="tool" href="#">&Oslash; Clear</a>');
         $tools.append($clear_lines);
 
         $clear_lines.click(function(e) {
           $('.console[data-channel="' + channel + '"] .lines').html('');
           rendered_channels[channel].last_timestamp = new Date().getTime() * 10000;
+          return false;
         });
 
         // load history tool
-        $load_history = $('<a class="tool">&#9650; Previous 2 Minutes</a>');
+        $load_history = $('<a class="tool" href="#">&#9650; Previous 2 Minutes</a>');
         $tools.append($load_history);
 
         $load_history.click(function(e) {
           load_history(channel);
+          return false;
         });
 
         // filter tool
