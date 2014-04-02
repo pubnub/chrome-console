@@ -5,7 +5,7 @@
     auto_scroll = {},
     subscribe_key = null;
 
-  library = {
+  var library = {
     pad: function(n) { return ("0" + n).slice(-2); },
     json: {
       replacer: function(match, pIndent, pKey, pVal, pEnd) {
@@ -81,7 +81,7 @@
         $new_console = $('<ul class="lines"></ul>');
 
         // create new div for tools
-        $tools = $('<div class="tools"></div>');
+        $tools = $('<div class="tools"><a href="http://pubunb.com/" class="logo" target="_blank"><img src="http://www.pubnub.com/static/images/structure/pubnub.png"/></a></div>');
 
         // wrapper for console
         $new_console_wrapper = $('<div class="console hide" data-channel="' + channel + '"></div>');
@@ -195,7 +195,7 @@
 
         }
 
-        $notes.innerHTML = library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds());
+        $notes.html(library.pad(date.getHours()) + ':' + library.pad(date.getMinutes()) + ':' + library.pad(date.getSeconds()));
 
         $the_console.append($new_line);
 
@@ -351,7 +351,7 @@
   function resizeLines() {
 
     var $lines = $('.lines'),
-      new_height = ($(window).height() - 30);
+      new_height = ($(window).height() - 25);
 
     $lines.each(function(i, el) {
       $(el).height(new_height);

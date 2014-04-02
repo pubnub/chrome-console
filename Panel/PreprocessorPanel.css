@@ -2,16 +2,18 @@
   margin: 0px;
   padding: 0px;
   color: #111;
-  font-size: 12px;
+  font-size: 11px;
   color: rgb(48, 57, 66);
+  box-sizing: border-box;
 }
 body {
-  font-family: 'Lucida Grande', sans-serif;
+  font-family: "Droid Sans", "Lucida Grande", sans-serif;
 }
 h2 {
   border-bottom: 1px solid #ddd;
   padding: 4px;
   display: block;
+  height: 22px;
 }
 ul, ol {
   list-style-type: none;
@@ -23,20 +25,29 @@ ul, ol {
   background-color: #efefef;
   overflow: scroll;
   height: 100%;
+  border-right: 1px solid #bcbcbc;
+}
+#channels-wrapper h2 {
+  border-bottom: 1px solid #bcbcbc;
 }
 #channels-wrapper .channel {
   padding: 4px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #bcbcbc;
+  border-top: 1px solid #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 10px;
+  color: #777;
+  box-shadow: 0px -1px 3px #ccc;
 }
 #channels-wrapper .channel:hover {
   text-decoration: underline;
   cursor: pointer;
 }
 #channels-wrapper .channel.active {
-  background-color: #ddd;
+  background-color: #E2E2E2;
+  color: #000;
 }
 #consoles-wrapper {
 }
@@ -47,7 +58,8 @@ ul, ol {
   bottom: 0px;
   word-wrap: break-word;
   overflow-y: scroll;
-  font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+  font-size: 12px;
+  font-family: "Droid Sans Mono";
 }
 .lines li {
   padding: 4px;
@@ -60,11 +72,11 @@ ul, ol {
   right: 4px;
   top: 4px;
   font-size: 10px;
-  font-family: 'Lucida Grande', sans-serif;
   color: #ccc;
 }
 .lines li .notes:before {
   margin-right: 4px;
+  font-size: 9px;
 }
 .lines li.publish .notes:before {
   content: "Publish";
@@ -81,11 +93,12 @@ ul, ol {
 .tools {
   position: fixed;
   top: 0px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #bcbcbc;
+  border-left: 1px solid #fff;
   background-color: #efefef;
   font-size: 12px;
-  height: 29px;
-  line-height: 29px;
+  height: 22px;
+  line-height: 23px;
   width: 75%;
   left: 25%;
 }
@@ -108,13 +121,13 @@ ul, ol {
   cursor: initial;
 }
 .json-key {
-  color: brown;
+  color: #111;
 }
 .json-value {
-  color: navy;
+  color: #a91c23;
 }
 .json-string {
-  color: olive;
+  color: #3394bf;
 }
 
 .hide {
@@ -122,4 +135,21 @@ ul, ol {
 }
 .show {
   display: block;
+}
+
+img {
+  max-width: 100%;
+}
+.logo {
+  display: block;
+  position: absolute;
+  right: 6px;
+  top: 4px;
+}
+.logo:hover img {
+  opacity: 1;
+}
+.logo img {
+  width: 64px;
+  opacity: .9;
 }
