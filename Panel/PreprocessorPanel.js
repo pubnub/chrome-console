@@ -89,7 +89,7 @@
         $new_console_wrapper.append($new_console);
 
         // new entry in channels pane
-        $new_channel = $('<li class="channel" data-channel="' + channel + '">' + channel_ + '</li>');
+        $new_channel = $('<li class="channel" data-channel="' + channel + '">' + channel_ + '<div class="sparky"></div></li>');
         $channels.append($new_channel);
 
         $new_channel.click(function() {
@@ -153,7 +153,9 @@
         // set property for channels data
         rendered_channels[channel] = {
           auto_scroll: true,
-          last_timestamp: timestamp
+          last_timestamp: timestamp,
+          messages: [],
+          messages_over_time: []
         };
 
         // bind events
@@ -177,7 +179,13 @@
 
       } else {
 
-        if(type == 1) {
+        if(typeof rendered_channels[channel].messages[type] == "undefined") {
+          rendered_channels[channel].messages[type] = 0;
+        }
+
+        rendered_channels[channel].messages[type] = rendered_channels[channel].messages[type] + 1;
+
+        if(type == 2) {
 
           $new_line.addClass('publish');
 
@@ -289,7 +297,7 @@
 
           message = JSON.parse(decodeURIComponent(params[7]));
 
-          render(channel, message, (new Date().getTime() * 10000), 1);
+          render(channel, message, (new Date().getTime() * 10000), 2);
 
         }
 
@@ -317,19 +325,27 @@
                   channels = parsed[2].split(',');
 
                   for(var i = 0; i < parsed[0].length; i++) {
-                    render(channels[i], parsed[0][i], (new Date().getTime() * 10000), 2);
+                    render(channels[i], parsed[0][i], (new Date().getTime() * 10000), 1);
                   }
 
                 } else {
 
-                  // single
-                  channel = params[3];
+                  console.log(parsed);
 
-                  if(typeof parsed !== "undefined") {
-                    message = parsed[0][0];
+                  if(parsed.error) {
+                    render(parsed.payload.channels[0], parsed.service + ': ' + parsed.message, (new Date().getTime() * 10000), 1);
+                  } else {
+
+                    // single
+                    channel = params[3];
+
+                    if(typeof parsed !== "undefined") {
+                      message = parsed[0][0];
+                    }
+
+                    render(channel, message, (new Date().getTime() * 10000), 1);
+
                   }
-
-                  render(channel, message, (new Date().getTime() * 10000), 2);
 
                 }
 
@@ -366,6 +382,34 @@
     resizeLines();
 
     $(window).resize(resizeLines);
+
+    setInterval(function(){
+
+      $('.channel').each(function(i, el) {
+
+
+        var a_channel = rendered_channels[$(el).attr('data-channel')];
+        var next_step = [];
+
+        var i = 0;
+        while(i < a_channel.messages.length) {
+
+          next_step[i] = a_channel.messages[i];
+
+          a_channel.messages[i] = 0;
+          i++;
+
+        }
+        a_channel.messages_over_time.push(next_step);
+
+        console.log(next_step);
+        console.log(a_channel.messages_over_time);
+
+        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px'});
+
+      });
+
+    }, 1000);
 
   }
 
