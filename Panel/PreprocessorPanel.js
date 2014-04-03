@@ -89,7 +89,7 @@
         $new_console_wrapper.append($new_console);
 
         // new entry in channels pane
-        $new_channel = $('<li class="channel" data-channel="' + channel + '">' + channel_ + '<div class="sparky"></div></li>');
+        $new_channel = $('<li class="channel" data-channel="' + channel + '"><div class="name">' + channel_ + '</div><div class="sparky"></div></li>');
         $channels.append($new_channel);
 
         $new_channel.click(function() {
@@ -154,7 +154,7 @@
         rendered_channels[channel] = {
           auto_scroll: true,
           last_timestamp: timestamp,
-          messages: [],
+          messages: 0,
           messages_over_time: []
         };
 
@@ -163,6 +163,8 @@
         resizeLines();
 
       }
+
+      rendered_channels[channel].messages = rendered_channels[channel].messages + 1;
 
       $notes = $('<div></div>');
       $notes.addClass('notes');
@@ -178,12 +180,6 @@
         $the_console.prepend($new_line);
 
       } else {
-
-        if(typeof rendered_channels[channel].messages[type] == "undefined") {
-          rendered_channels[channel].messages[type] = 0;
-        }
-
-        rendered_channels[channel].messages[type] = rendered_channels[channel].messages[type] + 1;
 
         if(type == 2) {
 
@@ -389,23 +385,16 @@
 
 
         var a_channel = rendered_channels[$(el).attr('data-channel')];
-        var next_step = [];
 
-        var i = 0;
-        while(i < a_channel.messages.length) {
-
-          next_step[i] = a_channel.messages[i];
-
-          a_channel.messages[i] = 0;
-          i++;
-
+        if(a_channel.messages_over_time.length > 10) {
+          a_channel.messages_over_time.shift();
         }
-        a_channel.messages_over_time.push(next_step);
+        a_channel.messages_over_time.push(a_channel.messages);
+        a_channel.messages = 0;
 
-        console.log(next_step);
         console.log(a_channel.messages_over_time);
 
-        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px'});
+        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px', barColor: '#BBB', height: '15px', chartRangeMin: 0, chartRangeMax: 8});
 
       });
 

@@ -25,20 +25,37 @@ ul, ol {
   overflow: scroll;
   height: 100%;
   border-right: 1px solid #bcbcbc;
+  z-index: 2;
 }
 #channels-wrapper h2 {
   border-bottom: 1px solid #bcbcbc;
 }
 #channels-wrapper .channel {
-  padding: 4px;
   border-bottom: 1px solid #bcbcbc;
   border-top: 1px solid #fff;
+  box-shadow: 0px -1px 3px #ccc;
+  position: relative;
+  height: 17px;
+}
+#channels-wrapper .channel .name {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 10px;
-  color: #777;
-  box-shadow: 0px -1px 3px #ccc;
+  color: #333;
+  position: absolute;
+  top: 3px;
+  left: 5px;
+  z-index: 5;
+  width: 100%;
+  padding-right: 61px;
+  box-sizing: border-box;
+}
+#channels-wrapper .channel .sparky {
+  position: absolute;
+  bottom: 1px;
+  height: 15px;
+  right: 1px;
 }
 #channels-wrapper .channel:hover {
   text-decoration: underline;
@@ -93,7 +110,6 @@ ul, ol {
   position: fixed;
   top: 0px;
   border-bottom: 1px solid #bcbcbc;
-  border-left: 1px solid #fff;
   background-color: #efefef;
   font-size: 12px;
   height: 22px;
