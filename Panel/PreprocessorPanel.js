@@ -394,7 +394,7 @@
 
         console.log(a_channel.messages_over_time);
 
-        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px', barColor: '#BBB', height: '15px', chartRangeMin: 0, chartRangeMax: 8});
+        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px', barColor: '#BBB', height: '15px', chartRangeMin: 0, chartRangeMax: 8, disableTooltips: true});
 
       });
 
