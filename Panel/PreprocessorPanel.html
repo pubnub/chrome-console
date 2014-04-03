@@ -9,15 +9,26 @@
 </head>
 <body>
 
-	<div id="channels-wrapper">
-		<h2>Channels</h2>
-		<ul id="channels">
-		</ul>
+	<div id="on">
+
+		<div id="channels-wrapper">
+			<h2>Channels</h2>
+			<ul id="channels">
+			</ul>
+		</div>
+
+		<div id="consoles-wrapper">
+			<div id="consoles">
+			</div>
+		</div>
+
 	</div>
 
-	<div id="consoles-wrapper">
-		<div id="consoles">
+	<div id="off">
+		<div id="loading">
+			<img src="loader.gif" class="loader" />
 		</div>
+		<div class="message">Waiting for PubNub traffic...</div>
 	</div>
 
   <script src="PreprocessorPanel.js"></script>

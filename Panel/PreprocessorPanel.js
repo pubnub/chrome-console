@@ -170,6 +170,7 @@
         // bind events
         scrollWatch(channel);
         resizeLines();
+        switch_on();
 
       }
 
@@ -398,6 +399,12 @@
 
   }
 
+  function switch_on() {
+    if($('#off').is(':visible')) {
+      $('#off').hide();
+    }
+  }
+
   function start() {
 
     bindRequest();
@@ -408,7 +415,6 @@
     setInterval(function(){
 
       $('.channel').each(function(i, el) {
-
 
         var a_channel = rendered_channels[$(el).attr('data-channel')];
 
