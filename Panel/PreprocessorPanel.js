@@ -100,7 +100,7 @@
         $consoles.append($new_console_wrapper);
 
         // clear output tool
-        $clear_lines = $('<a class="tool" href="#">&Oslash; Clear</a>');
+        $clear_lines = $('<a class="tool" href="#"><i class="fa fa-eye-slash"></i>Clear</a>');
         $tools.append($clear_lines);
 
         $clear_lines.click(function(e) {
@@ -110,7 +110,7 @@
         });
 
         // load history tool
-        $load_history = $('<a class="tool" href="#">&#9650; Previous 2 Minutes</a>');
+        $load_history = $('<a class="tool" href="#"><i class="fa fa-clock-o"></i>Previous 2 Minutes</a>');
         $tools.append($load_history);
 
         $load_history.click(function(e) {
@@ -119,7 +119,7 @@
         });
 
         // presence
-        $presence = $('<a class="tool" href="#">Here Now</a>');
+        $presence = $('<a class="tool" href="#"><i class="fa fa-users"></i>Here Now</a>');
         $tools.append($presence);
 
         $presence.click(function(e) {

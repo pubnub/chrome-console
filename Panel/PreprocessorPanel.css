@@ -126,8 +126,12 @@ ul, ol {
 }
 .tools .tool {
   display: inline-block;
-  margin-left: 4px;
-  margin-right: 16px;
+  margin-left: 8px;
+  margin-right: 12px;
+  font-size: 10px;
+}
+.tools .tool i {
+  margin-right: 5px;
 }
 .tools .tool.disabled {
   color: #ccc;
