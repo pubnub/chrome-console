@@ -10,9 +10,10 @@ body {
 }
 h2 {
   border-bottom: 1px solid #ddd;
-  padding: 4px;
   display: block;
   height: 22px;
+  line-height: 23px;
+  padding-left: 5px;
 }
 ul, ol {
   list-style-type: none;
@@ -58,8 +59,10 @@ ul, ol {
   right: 1px;
 }
 #channels-wrapper .channel:hover {
-  text-decoration: underline;
   cursor: pointer;
+}
+#channels-wrapper .channel:hover .name {
+  text-decoration: underline;
 }
 #channels-wrapper .channel.active {
   background-color: #E2E2E2;
@@ -104,6 +107,10 @@ ul, ol {
 }
 .lines li.history .notes:before {
   content: "History";
+  color: #ddd;
+}
+.lines li.presence .notes:before {
+  content: "Presence";
   color: #ddd;
 }
 .tools {

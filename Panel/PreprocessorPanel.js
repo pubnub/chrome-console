@@ -118,6 +118,15 @@
           return false;
         });
 
+        // presence
+        $presence = $('<a class="tool" href="#">Here Now</a>');
+        $tools.append($presence);
+
+        $presence.click(function(e) {
+          presence(channel);
+          return false;
+        });
+
         // filter tool
         $filter = $('<select class="tool filter"> \
           <option value="0">All Messages</option> \
@@ -178,6 +187,11 @@
 
         $new_line.addClass('history');
         $the_console.prepend($new_line);
+
+      } else if (type == 4) {
+
+        $new_line.addClass('presence');
+        $the_console.append($new_line);
 
       } else {
 
@@ -255,7 +269,7 @@
         } else {
 
           for(var i = 0; i < history[0].length; i++) {
-            render(decodeURIComponent(channel), history[0][i], history[1], 3);
+            render(channel, history[0][i], history[1], 3);
           }
 
           // scroll to top
@@ -266,6 +280,19 @@
         }
 
       },
+    });
+
+  }
+
+  function presence(channel) {
+
+    console.log('loading presence from ' + rendered_channels[channel].last_timestamp);
+
+    pubnub.here_now({
+      channel : channel,
+      callback : function(m){
+        render(channel, m, (new Date().getTime() * 10000), 4);
+      }
     });
 
   }
@@ -290,7 +317,6 @@
         if(params[1] == "publish") {
 
           channel = decodeURIComponent(params[5]);
-
           message = JSON.parse(decodeURIComponent(params[7]));
 
           render(channel, message, (new Date().getTime() * 10000), 2);
@@ -394,7 +420,7 @@
 
         console.log(a_channel.messages_over_time);
 
-        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px', barColor: '#BBB', height: '15px', chartRangeMin: 0, chartRangeMax: 8, disableTooltips: true});
+        $(el).find('.sparky').sparkline(a_channel.messages_over_time, {type: 'bar', width: '50px', barColor: '#BBB', height: '15px', chartRangeMin: 0, chartRangeMax: 8, disableTooltips: true, disableHighlight: true});
 
       });
 
