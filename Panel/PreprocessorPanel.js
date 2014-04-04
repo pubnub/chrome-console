@@ -81,7 +81,12 @@
         $new_console = $('<ul class="lines"></ul>');
 
         // create new div for tools
-        $tools = $('<div class="tools"><a href="http://pubunb.com/" class="logo" target="_blank"><img src="http://www.pubnub.com/static/images/structure/pubnub.png"/></a></div>');
+        $tools = $('<div class="tools"><a class="logo"><img src="http://www.pubnub.com/static/images/structure/pubnub.png"/></a></div>');
+
+        $tools.find('.logo').click(function(){
+          window.open("http://www.pubnub.com");
+          return false;
+        });
 
         // wrapper for console
         $new_console_wrapper = $('<div class="console hide" data-channel="' + channel + '"></div>');
