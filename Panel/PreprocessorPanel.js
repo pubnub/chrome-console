@@ -81,7 +81,7 @@
         $new_console = $('<ul class="lines"></ul>');
 
         // create new div for tools
-        $tools = $('<div class="tools"><a class="logo"><img src="http://www.pubnub.com/static/images/structure/pubnub.png"/></a></div>');
+        $tools = $('<div class="tools"><a class="logo" href="#"><img src="http://www.pubnub.com/static/images/structure/pubnub.png"/></a></div>');
 
         $tools.find('.logo').click(function(){
           window.open("http://www.pubnub.com");
