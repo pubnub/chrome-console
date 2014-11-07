@@ -194,6 +194,11 @@
         $new_line.addClass('history');
         $the_console.prepend($new_line);
 
+      } else if (type == 5) {
+
+        $new_line.addClass('history');
+        $the_console.append($new_line);
+
       } else if (type == 4) {
 
         $new_line.addClass('presence');
@@ -327,6 +332,50 @@
 
           render(channel, message, (new Date().getTime() * 10000), 2);
 
+        }
+
+        if(params[2] == "history") {
+
+          channel = decodeURIComponent(params[6]);
+
+          request.getContent(function(body){
+
+            parsed = JSON.parse(body);
+
+            if(parsed) {
+
+              if(!parsed[0].length) {
+
+                alert('No history for this channel.');
+
+              } else {
+
+                for(var i = 0; i < parsed[0].length; i++) {
+                  render(channel, parsed[0][i], parsed[1], 5);
+                }
+
+              }
+            }
+
+          });
+
+        }
+
+        if(params[2] === 'presence' && !params[7]) {
+
+          channel = decodeURIComponent(params[6]);
+
+          request.getContent(function(body){
+
+            parsed = JSON.parse(body);
+
+            if(parsed) {
+
+              render(channel, parsed, (new Date().getTime() * 10000), 4);
+
+            }
+
+          });
         }
 
         if(params[1] == "subscribe") {
