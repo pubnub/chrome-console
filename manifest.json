@@ -1,4 +1,4 @@
-{i
+{
   "name": "PubNub Console",
   "version": "1.0",
   "description": "Monitor PubNub traffic filtered by channel.",
