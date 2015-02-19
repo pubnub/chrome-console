@@ -1,6 +1,6 @@
-{
+{i
   "name": "PubNub Console",
-  "version": "0.5",
+  "version": "1.0",
   "description": "Monitor PubNub traffic filtered by channel.",
   "devtools_page": "chrome-preprocessor.html",
   "manifest_version": 2,
