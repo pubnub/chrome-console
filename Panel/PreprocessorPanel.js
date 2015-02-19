@@ -3,7 +3,7 @@
   var rendered_channels = {},
     library = {},
     auto_scroll = {},
-    subscribe_key = null;
+    instances = {};
 
   var library = {
     pad: function(n) { return ("0" + n).slice(-2); },
@@ -55,7 +55,7 @@
 
   }
 
-  function render(channel_, message, timestamp, type) {
+  function render(channel_, message, timestamp, type, subscribe_key) {
 
     // console.log('type ' + type + ' and timestamp ' + timestamp);
 
@@ -74,6 +74,14 @@
         $clear_lines = null,
         $filter = null,
         $notes = null;
+
+      if (subscribe_key && !(subscribe_key in instances)) {
+
+        instances[subscribe_key] = PUBNUB.init({
+          subscribe_key: subscribe_key
+        });
+
+      }
 
       if (typeof rendered_channels[channel] == 'undefined') {
 
@@ -119,7 +127,7 @@
         $tools.append($load_history);
 
         $load_history.click(function(e) {
-          load_history(channel);
+          load_history(channel, subscribe_key);
           return false;
         });
 
@@ -128,7 +136,7 @@
         $tools.append($presence);
 
         $presence.click(function(e) {
-          presence(channel);
+          presence(channel, subscribe_key);
           return false;
         });
 
@@ -137,6 +145,8 @@
           <option value="0">All Messages</option> \
           <option value="1">Only Subscribe</option> \
           <option value="2">Only Publish</option> \
+          <option value="3">Only History</option> \
+          <option value="4">Only Presence</option> \
         </select>');
 
         $tools.append($filter);
@@ -148,12 +158,23 @@
           });
 
           if(this.value == 1) {
-            $new_console_wrapper.find('.publish').each(function(i, el) {
+            $new_console_wrapper.find('li:not(.subscribe)').each(function(i, el) {
               $(el).addClass('hide');
             });
           }
           if(this.value == 2) {
-            $new_console_wrapper.find('.subscribe').each(function(i, el) {
+            $new_console_wrapper.find('li:not(.publish)').each(function(i, el) {
+              $(el).addClass('hide');
+            });
+          }
+          if(this.value == 3) {
+            $new_console_wrapper.find('li:not(.history)').each(function(i, el) {
+              $(el).addClass('hide');
+            });
+          }
+
+          if(this.value == 4) {
+            $new_console_wrapper.find('li:not(.presence)').each(function(i, el) {
               $(el).addClass('hide');
             });
           }
@@ -259,13 +280,17 @@
 
   }
 
-  function load_history(channel) {
+  function load_history(channel, subscribe_key) {
 
     console.log('loading history from ' + rendered_channels[channel].last_timestamp);
 
     var since_when = rendered_channels[channel].last_timestamp - (120 * 10000000);
 
-    pubnub.history({
+    if (!subscribe_key in instances) {
+      return;
+    }
+
+    instances[subscribe_key].history({
       channel: channel,
       start: since_when,
       end: rendered_channels[channel].last_timestamp,
@@ -295,11 +320,15 @@
 
   }
 
-  function presence(channel) {
+  function presence(channel, subscribe_key) {
 
     console.log('loading presence from ' + rendered_channels[channel].last_timestamp);
 
-    pubnub.here_now({
+    if (!subscribe_key in instances) {
+      return;
+    }
+
+    instances[subscribe_key].here_now({
       channel : channel,
       callback : function(m){
         render(channel, m, (new Date().getTime() * 10000), 4);
@@ -316,6 +345,7 @@
         params = null,
         channel = null,
         message = null,
+        subscribe_key = null,
         channels = [],
         i = 0;
 
@@ -328,15 +358,17 @@
         if(params[1] == "publish") {
 
           channel = decodeURIComponent(params[5]);
+          subscribe_key = decodeURIComponent(params[3]);
           message = JSON.parse(decodeURIComponent(params[7]));
 
-          render(channel, message, (new Date().getTime() * 10000), 2);
+          render(channel, message, (new Date().getTime() * 10000), 2, subscribe_key);
 
         }
 
         if(params[2] == "history") {
 
           channel = decodeURIComponent(params[6]);
+          subscribe_key = decodeURIComponent(params[4]);
 
           request.getContent(function(body){
 
@@ -351,7 +383,7 @@
               } else {
 
                 for(var i = 0; i < parsed[0].length; i++) {
-                  render(channel, parsed[0][i], parsed[1], 5);
+                  render(channel, parsed[0][i], parsed[1], 5, subscribe_key);
                 }
 
               }
@@ -364,6 +396,7 @@
         if(params[2] === 'presence' && !params[7]) {
 
           channel = decodeURIComponent(params[6]);
+          subscribe_key = decodeURIComponent(params[4]);
 
           request.getContent(function(body){
 
@@ -371,7 +404,7 @@
 
             if(parsed) {
 
-              render(channel, parsed, (new Date().getTime() * 10000), 4);
+              render(channel, parsed, (new Date().getTime() * 10000), 4, subscribe_key);
 
             }
 
@@ -380,19 +413,11 @@
 
         if(params[1] == "subscribe") {
 
-          if(!subscribe_key) {
-
-            subscribe_key = params[2];
-
-            pubnub = PUBNUB.init({
-              subscribe_key: subscribe_key,
-            });
-
-          }
-
           request.getContent(function(body){
 
               parsed = JSON.parse(body);
+
+              subscribe_key = decodeURIComponent(params[2]);
 
               if(parsed) {
 
@@ -402,7 +427,7 @@
                   channels = parsed[2].split(',');
 
                   for(var i = 0; i < parsed[0].length; i++) {
-                    render(channels[i], parsed[0][i], (new Date().getTime() * 10000), 1);
+                    render(channels[i], parsed[0][i], (new Date().getTime() * 10000), 1, subscribe_key);
                   }
 
                 } else {
@@ -410,7 +435,7 @@
                   console.log(parsed);
 
                   if(parsed.error) {
-                    render(parsed.payload.channels[0], parsed.service + ': ' + parsed.message, (new Date().getTime() * 10000), 1);
+                    render(parsed.payload.channels[0], parsed.service + ': ' + parsed.message, (new Date().getTime() * 10000), 1, subscribe_key);
                   } else {
 
                     // single
@@ -420,7 +445,7 @@
                       message = parsed[0][0];
                     }
 
-                    render(channel, message, (new Date().getTime() * 10000), 1);
+                    render(channel, message, (new Date().getTime() * 10000), 1, subscribe_key);
 
                   }
 
