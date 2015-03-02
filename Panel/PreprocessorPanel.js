@@ -374,19 +374,12 @@
 
             parsed = JSON.parse(body);
 
-            if(parsed) {
+            if(parsed && parsed[0].length) {
 
-              if(!parsed[0].length) {
-
-                alert('No history for this channel.');
-
-              } else {
-
-                for(var i = 0; i < parsed[0].length; i++) {
-                  render(channel, parsed[0][i], parsed[1], 5, subscribe_key);
-                }
-
+              for(var i = 0; i < parsed[0].length; i++) {
+                render(channel, parsed[0][i], parsed[1], 5, subscribe_key);
               }
+
             }
 
           });
